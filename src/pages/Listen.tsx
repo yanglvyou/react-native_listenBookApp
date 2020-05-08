@@ -6,7 +6,7 @@ interface IProps {
   navigation: RootStackNavigation;
 }
 
-const Detail: FunctionComponent<IProps> = (props) => {
+const Listen: FunctionComponent<IProps> = (props) => {
   function goHome() {
     const {navigation} = props;
     navigation.navigate('Detail',{
@@ -25,4 +25,4 @@ const Detail: FunctionComponent<IProps> = (props) => {
   );
 };
 
-export default Detail;
+export default Listen;
