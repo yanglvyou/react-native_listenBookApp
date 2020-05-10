@@ -4,8 +4,9 @@ import {View, Text, Button} from 'react-native';
 import {RootStackNavigation} from '@/navigator/index';
 import {RootState} from '@/models/index';
 
-const mapStateToProps = ({home}: RootState) => ({
+const mapStateToProps = ({home, loading}: RootState) => ({
   num: home.num,
+  loading: loading.effects['home/asyncAdd'],
 });
 const connector = connect(mapStateToProps);
 
@@ -16,24 +17,35 @@ interface IProps extends ModelState {
 }
 
 const Home: FunctionComponent<IProps> = (props) => {
-  const {num} = props;
+  const {num, loading} = props;
   function goHome() {
     const {navigation, num} = props;
     navigation.navigate('Detail', {
       id: 100,
     });
   }
-  function AddOne(){
-    props.dispatch({type:"home/add",payload:{num:10}})
+  function AddOne() {
+    props.dispatch({type: 'home/add', payload: {num: 10}});
+  }
+
+  function asyncAddOne() {
+    props.dispatch({type: 'home/asyncAdd', payload: {num: 2}});
   }
   return (
     <View>
       <Text>Home页面1</Text>
       <Text>{num}</Text>
+      <Text>{loading ? '努力加载中...' : ''}</Text>
       <Button
         title="加10"
         onPress={() => {
           AddOne();
+        }}></Button>
+
+      <Button
+        title="异步加10"
+        onPress={() => {
+          asyncAddOne();
         }}></Button>
     </View>
   );
