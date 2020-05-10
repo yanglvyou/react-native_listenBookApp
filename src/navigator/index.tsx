@@ -11,11 +11,11 @@ import Detail from '@/pages/Detail';
 import {Platform, StyleSheet} from 'react-native';
 
 export type RootStackParamList = {
-  BottomTabs:{
-    screen?:string;
+  BottomTabs: {
+    screen?: string;
   };
   Detail: {
-    id:number;
+    id: number;
   };
 };
 export type RootStackNavigation = StackNavigationProp<RootStackParamList>;
