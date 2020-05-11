@@ -8,7 +8,7 @@ import {
 } from '@react-navigation/stack';
 import BottomTabs from './BottomTabs';
 import Detail from '@/pages/Detail';
-import {Platform, StyleSheet} from 'react-native';
+import {Platform, StyleSheet, StatusBar} from 'react-native';
 
 export type RootStackParamList = {
   BottomTabs: {
@@ -28,6 +28,7 @@ export default function Navigator() {
         headerMode="float"
         screenOptions={{
           headerTitleAlign: 'center',
+          headerStatusBarHeight:StatusBar.currentHeight,//设置状态栏高度
           headerStyleInterpolator: HeaderStyleInterpolators.forUIKit,
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
           gestureEnabled: true,
