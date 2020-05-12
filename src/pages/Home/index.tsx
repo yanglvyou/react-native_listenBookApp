@@ -4,6 +4,7 @@ import {View, Text, Button} from 'react-native';
 import IconFont from '@/assets/iconfont';
 import {RootStackNavigation} from '@/navigator/index';
 import {RootState} from '@/models/index';
+import Carousel from './Carousel';
 
 const mapStateToProps = ({home, loading}: RootState) => ({
   num: home.num,
@@ -49,6 +50,7 @@ const Home: FunctionComponent<IProps> = (props) => {
         onPress={() => {
           asyncAddOne();
         }}></Button>
+        <Carousel></Carousel>
     </View>
   );
 };
