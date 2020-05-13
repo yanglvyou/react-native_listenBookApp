@@ -1,8 +1,9 @@
-import React from 'react';
-import {Image, StyleSheet} from 'react-native';
+import React, {useState} from 'react';
+import {StyleSheet, View} from 'react-native';
 import SnapCarousel, {
   AdditionalParallaxProps,
   ParallaxImage,
+  Pagination,
 } from 'react-native-snap-carousel';
 import {viewportHeight, viewportWidth, hp, wp} from '@/utils/index';
 
@@ -19,6 +20,24 @@ const silderWidth = wp(90);
 const sildeHeight = hp(26);
 const itemWidth = silderWidth + wp(2) * 2;
 const Carousel = () => {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const onSnapToItem = (index: number) => {
+    setActiveSlide(index);
+  };
+  const pagination = () => {
+    return (
+      <View style={styles.paginationWrapper}>
+        <Pagination
+          activeDotIndex={activeSlide}
+          dotContainerStyle={styles.dotContainer}
+          containerStyle={styles.paginationContainer}
+          dotStyle={styles.dot}
+          inactiveDotScale={0.8}
+          inactiveDotOpacity={0.4}
+          dotsLength={data.length}></Pagination>
+      </View>
+    );
+  };
   const renderItem = (
     {item}: {item: string},
     parallaxProps?: AdditionalParallaxProps,
@@ -30,21 +49,27 @@ const Carousel = () => {
         containerStyle={styles.imageContainer}
         parallaxFactor={0.8}
         showSpinner
-        spinnerColor='rgba(0,0,0,.25)'
-
+        spinnerColor="rgba(0,0,0,.25)"
         {...parallaxProps}></ParallaxImage>
     );
   };
+
   return (
-    <SnapCarousel
-      data={data}
-      renderItem={renderItem}
-      sliderWidth={sliderWidth}
-      itemWidth={itemWidth}
-      hasParallaxImages
-      loop
-      autoplay
-    />
+    <View>
+      <SnapCarousel
+        data={data}
+        renderItem={renderItem}
+        sliderWidth={sliderWidth}
+        itemWidth={itemWidth}
+        hasParallaxImages
+        onSnapToItem={(index) => {
+          onSnapToItem(index);
+        }}
+        loop
+        autoplay
+      />
+      {pagination()}
+    </View>
   );
 };
 
@@ -52,11 +77,32 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: itemWidth,
     height: sildeHeight,
-    borderRadius:5,
+    borderRadius: 5,
   },
   image: {
     ...StyleSheet.absoluteFillObject,
     resizeMode: 'cover',
+  },
+  paginationWrapper: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  paginationContainer: {
+    backgroundColor: 'rgba(0,0,0,.35)',
+    position: 'absolute',
+    top: -20,
+    paddingHorizontal: 3,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  dotContainer: {
+    marginHorizontal: 6,
+  },
+  dot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: 'rgba(255,255,255,.92)',
   },
 });
 
