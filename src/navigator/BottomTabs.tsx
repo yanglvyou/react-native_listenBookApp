@@ -11,7 +11,7 @@ import {RouteProp, TabNavigationState} from '@react-navigation/native';
 import HomeTabs from './HomeTabs';
 
 export type BottomTabParamList = {
-  Home: undefined;
+  HomeTabs: undefined;
   Listen: undefined;
   Found: undefined;
   Account: undefined;

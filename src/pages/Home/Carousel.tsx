@@ -75,6 +75,7 @@ const Carousel = () => {
 
 const styles = StyleSheet.create({
   imageContainer: {
+    marginTop:10,
     width: itemWidth,
     height: sildeHeight,
     borderRadius: 5,

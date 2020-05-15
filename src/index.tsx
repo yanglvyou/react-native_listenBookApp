@@ -10,9 +10,11 @@ export default class App extends Component {
       <Provider store={store}>
         <Navigator></Navigator>
         <StatusBar
-          backgroundColor="transparent"
-          barStyle="dark-content"
-          translucent></StatusBar>
+          backgroundColor={'rgba(0, 0, 0, 0.3)'}
+          barStyle={'light-content'}
+          translucent
+          >
+          </StatusBar>
       </Provider>
     );
   }

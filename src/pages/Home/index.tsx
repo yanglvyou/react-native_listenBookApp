@@ -5,6 +5,7 @@ import IconFont from '@/assets/iconfont';
 import {RootStackNavigation} from '@/navigator/index';
 import {RootState} from '@/models/index';
 import Carousel from './Carousel';
+import DefaultCarousel from '@/components/DefaultCarousel';
 
 const mapStateToProps = ({home, loading}: RootState) => ({
   num: home.num,
@@ -35,22 +36,9 @@ const Home: FunctionComponent<IProps> = (props) => {
   }
   return (
     <View>
-      <Text>Home页面1</Text>
-      <IconFont name="iconyemian" size={20} color='green'></IconFont>
-      <Text>{num}</Text>
-      <Text>{loading ? '努力加载中...' : ''}</Text>
-      <Button
-        title="加10"
-        onPress={() => {
-          AddOne();
-        }}></Button>
-
-      <Button
-        title="异步加10"
-        onPress={() => {
-          asyncAddOne();
-        }}></Button>
+      {/*<IconFont name="iconyemian" size={20} color='green'></IconFont>*/}
         <Carousel></Carousel>
+        {/*<DefaultCarousel></DefaultCarousel>*/}
     </View>
   );
 };
