@@ -3,6 +3,7 @@ import {StatusBar} from 'react-native';
 import Navigator from '@/navigator/index';
 import {Provider} from 'react-redux';
 import store from '@/config/dva';
+import '@/config/http';
 
 export default class App extends Component {
   render() {
