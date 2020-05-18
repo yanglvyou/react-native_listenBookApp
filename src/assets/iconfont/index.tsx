@@ -4,6 +4,7 @@
 import React, { FunctionComponent } from 'react';
 import { ViewProps } from 'react-native';
 import { GProps } from 'react-native-svg';
+import Iconmeiyoushuju from './Iconmeiyoushuju';
 import Iconshengyin from './Iconshengyin';
 import IconiconTest from './IconiconTest';
 import Iconshengyin1 from './Iconshengyin1';
@@ -21,7 +22,7 @@ import Iconyemian1 from './Iconyemian1';
 import Iconindex from './Iconindex';
 import Iconindex1 from './Iconindex1';
 
-export type IconNames = 'iconshengyin' | 'iconicon-test' | 'iconshengyin1' | 'iconxihuan-' | 'iconxihuantianchong' | 'iconziyuan' | 'icongengduo' | 'iconfaxian' | 'iconiconfontxingxing' | 'iconzhanghao' | 'iconren' | 'iconshoucang' | 'iconyemian' | 'iconyemian1' | 'iconindex' | 'iconindex1';
+export type IconNames = 'iconmeiyoushuju' | 'iconshengyin' | 'iconicon-test' | 'iconshengyin1' | 'iconxihuan-' | 'iconxihuantianchong' | 'iconziyuan' | 'icongengduo' | 'iconfaxian' | 'iconiconfontxingxing' | 'iconzhanghao' | 'iconren' | 'iconshoucang' | 'iconyemian' | 'iconyemian1' | 'iconindex' | 'iconindex1';
 
 interface Props extends GProps, ViewProps {
   name: IconNames;
@@ -31,6 +32,8 @@ interface Props extends GProps, ViewProps {
 
 const IconFont: FunctionComponent<Props> = ({ name, ...rest }) => {
   switch (name) {
+    case 'iconmeiyoushuju':
+      return <Iconmeiyoushuju {...rest} />;
     case 'iconshengyin':
       return <Iconshengyin {...rest} />;
     case 'iconicon-test':

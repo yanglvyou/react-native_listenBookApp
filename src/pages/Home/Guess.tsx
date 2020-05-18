@@ -36,7 +36,7 @@ const Guess = React.memo(() => {
     return (
       <Touchable
         onPress={() => {
-          alert('点击了');
+          Alert.alert('点击了');
         }}
         style={styles.item}>
         <Image source={{uri: item.image}} style={styles.image}></Image>
