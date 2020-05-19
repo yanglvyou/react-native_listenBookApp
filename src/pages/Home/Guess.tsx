@@ -23,12 +23,10 @@ import Touchable from '@/components/Touchable';
 
 const Guess = React.memo(() => {
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch({type: 'home/fetchGuess'});
-  }, []);
+
   const {guess} = useSelector(({home}: RootState) => ({guess: home.guess}));
 
-  function _keyExtractor(item:IGuess){
+  function _keyExtractor(item: IGuess) {
     return item.id;
   }
 

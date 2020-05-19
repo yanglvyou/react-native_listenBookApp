@@ -27,10 +27,7 @@ interface IProps {
 }
 
 const BottomTabs: FunctionComponent<IProps> = (props) => {
-  function getHeaderTitle(route: Route) {
-    const routeName = route.state
-      ? route.state.routes[route.state.index].name
-      : route.params?.screen || 'HomeTabs';
+  function getHeaderTitle(routeName: string) {
     switch (routeName) {
       case 'HomeTabs':
         return '首页';
@@ -46,8 +43,19 @@ const BottomTabs: FunctionComponent<IProps> = (props) => {
   }
   useEffect(() => {
     const {navigation, route} = props;
+    const routeName = route.state
+      ? route.state.routes[route.state.index].name
+      : route.params?.screen || 'HomeTabs';
+    if (routeName === 'HomeTabs') {
+      navigation.setOptions({
+        headerTransparent: true,
+        headerTitle: '',
+      });
+      return;
+    }
     navigation.setOptions({
-      headerTitle: getHeaderTitle(route),
+      headerTransparent: false,
+      headerTitle: getHeaderTitle(routeName),
     });
   }, [props.route]);
   return (

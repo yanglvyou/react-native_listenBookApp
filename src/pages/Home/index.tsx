@@ -63,6 +63,10 @@ const Home: FunctionComponent<IProps> = (props) => {
     dispatch({type: 'home/fetchChannels'});
   }, []);
 
+  useEffect(() => {
+    dispatch({type: 'home/fetchGuess'});
+  }, []);
+
   const onPress = useCallback((data: IChannel) => {
     Alert.alert(`点击了${data.title}`);
   }, []);
