@@ -20,10 +20,12 @@ import {
   ListRenderItemInfo,
   Alert,
   StyleSheet,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from 'react-native';
 import {RootStackNavigation} from '@/navigator/index';
 import {RootState} from '@/models/index';
-import Carousel from './Carousel';
+import Carousel, {sildeHeight} from './Carousel';
 import Guess from './Guess';
 import DefaultCarousel from '@/components/DefaultCarousel';
 import ChannelItem from './ChannelItem';
@@ -48,7 +50,7 @@ interface IState {
 const Home: FunctionComponent<IProps> = (props) => {
   // const {carousels, loading} = props;
   const carousels = useSelector(({home}: RootState) => home.carousels);
-  const channels = useSelector(({home}: RootState) => home.channels);
+  const {channels, gradientVisible} = useSelector(({home}: RootState) => home);
   const hasMore = useSelector(({home}: RootState) => home.pagination.hasMore);
   const loading = useSelector(
     ({loading}: RootState) => loading.effects['home/fetchChannels'],
@@ -140,6 +142,17 @@ const Home: FunctionComponent<IProps> = (props) => {
     });
   }
 
+  function _onScroll({nativeEvent}: NativeSyntheticEvent<NativeScrollEvent>) {
+    const offsetY = nativeEvent.contentOffset.y;
+    let newGradientVisible = offsetY < sildeHeight;
+    if (newGradientVisible !== gradientVisible) {
+      dispatch({
+        type: 'home/setState',
+        payload: {gradientVisible: newGradientVisible},
+      });
+    }
+  }
+
   return (
     <FlatList
       ListHeaderComponent={header}
@@ -152,6 +165,7 @@ const Home: FunctionComponent<IProps> = (props) => {
       keyExtractor={_keyExtractor}
       onEndReached={_onEndReached}
       onEndReachedThreshold={0.5}
+      onScroll={_onScroll}
     />
   );
 };
