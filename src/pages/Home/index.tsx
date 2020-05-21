@@ -100,7 +100,10 @@ const Home: FunctionComponent<IProps> = (props) => {
     return (
       <View>
         <Carousel data={carousels}></Carousel>
+        <View style={styles.backgroundColorGuess}>
         <Guess></Guess>
+        </View>
+
       </View>
     );
   }
@@ -193,6 +196,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 100,
   },
+  backgroundColorGuess:{
+    backgroundColor:'#fff',
+  }
 });
 
 export default connector(Home);

@@ -43,18 +43,30 @@ class TopTapBarWrapper extends React.Component<IProps> {
   }
 
   render() {
-    const {gradientVisible, ...restProps} = this.props;
+    let {gradientVisible, indicatorStyle, ...restProps} = this.props;
     let textStyle = styles.text;
-    let activeTintColor='#333';
+    let activeTintColor = '#333';
     if (gradientVisible) {
       textStyle = styles.whiteText;
-      activeTintColor='#fff';
+      activeTintColor = '#fff';
+      if (indicatorStyle) {
+        //合并样式
+        indicatorStyle = StyleSheet.compose(
+          indicatorStyle,
+          styles.whiteBackgroundColor,
+        );
+      }
     }
     return (
       <View style={styles.container}>
         {this.linearAnimatedGradientTransition}
         <View style={styles.tabBarView}>
-          <MaterialTopTabBar  {...restProps} activeTintColor={activeTintColor} style={styles.tabBar} />
+          <MaterialTopTabBar
+            {...restProps}
+            indicatorStyle={indicatorStyle}
+            activeTintColor={activeTintColor}
+            style={styles.tabBar}
+          />
           <Touchable style={styles.categoryBtn}>
             <Text style={textStyle}>分类</Text>
           </Touchable>
@@ -119,6 +131,9 @@ const styles = StyleSheet.create({
   whiteText: {
     color: '#fff',
   },
+  whiteBackgroundColor:{
+    backgroundColor:'#fff',
+  }
 });
 
 export default connector(TopTapBarWrapper);

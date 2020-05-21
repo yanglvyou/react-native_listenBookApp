@@ -19,13 +19,16 @@ const silderWidth = wp(90);
 export const sildeHeight = hp(26);
 const itemWidth = silderWidth + wp(2) * 2;
 const Carousel: FunctionComponent<IProps> = (props) => {
+  const [activeCarouselIndex,setActiveCarouselIndex]=useState(0);
   const dispatch = useDispatch();
-  const activeCarouselIndex = useSelector(
-    ({home}: RootState) => home.activeCarouselIndex,
-  );
+  // const activeCarouselIndex = useSelector(
+  //   ({home}: RootState) => home.activeCarouselIndex,
+  // );
+  // console.log(activeCarouselIndex,55555);
   const {data} = props;
   const onSnapToItem = (index: number) => {
-    dispatch({type: 'home/setState', payload: {activeCarouselIndex: index}});
+    // dispatch({type: 'home/setState', payload: {activeCarouselIndex: index}});
+    setActiveCarouselIndex(index);
   };
   const pagination = () => {
     return (
@@ -69,7 +72,7 @@ const Carousel: FunctionComponent<IProps> = (props) => {
           onSnapToItem(index);
         }}
         loop
-        // autoplay
+        autoplay
       />
       {pagination()}
     </View>

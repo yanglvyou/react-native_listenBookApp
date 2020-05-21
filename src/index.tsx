@@ -1,10 +1,14 @@
 import React, {Component} from 'react';
-import {StatusBar} from 'react-native';
+import {StatusBar,YellowBox} from 'react-native';
 import Navigator from '@/navigator/index';
 import {Provider} from 'react-redux';
 import store from '@/config/dva';
 import '@/config/http';
 
+YellowBox.ignoreWarnings([
+  'Animated: `useNativeDriver` was not specified. This is a required option and must be explicitly set to `true` or `false`',
+  'FlatList: Calling `getNode()` on the ref of an Animated component is no longer necessary.'
+])
 export default class App extends Component {
   render() {
     return (
