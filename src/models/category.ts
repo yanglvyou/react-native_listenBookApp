@@ -1,3 +1,4 @@
+import {RootState} from '@/models/index';
 import {Model, Effect, SubscriptionsMapObject} from 'dva-core-ts';
 import {Reducer} from 'redux';
 import axios from 'axios';
@@ -5,13 +6,14 @@ import storage, {load} from '@/config/storage';
 
 const CATEGORY_URL = 'mock/11/yang/category';
 
-interface ICategory {
+export interface ICategory {
   id: string;
   name: string;
   classify?: string;
 }
-interface CategoryModelState {
-  myCategory: ICategory[];
+export interface CategoryModelState {
+  isEdit: boolean;
+  myCategorys: ICategory[];
   categorys: ICategory[];
 }
 interface CategoryModel extends Model {
@@ -19,6 +21,7 @@ interface CategoryModel extends Model {
   state: CategoryModelState;
   effects: {
     loadData: Effect;
+    toggleEditBtn: Effect;
   };
   reducers: {
     setState: Reducer<CategoryModelState>;
@@ -27,7 +30,8 @@ interface CategoryModel extends Model {
 }
 
 const initialState = {
-  myCategory: [
+  isEdit: false,
+  myCategorys: [
     {
       id: 'home',
       name: '推荐',
@@ -62,6 +66,22 @@ const categoryModel: CategoryModel = {
           payload: {
             categorys,
           },
+        });
+      }
+    },
+    *toggleEditBtn(_, {put, select}) {
+      const category = yield select(({category}: RootState) => category);
+      yield put({
+        type: 'setState',
+        payload: {
+          isEdit: !category.isEdit,
+          myCategorys:category.myCategorys,
+        },
+      });
+      if (category.isEdit) {
+        storage.save({
+          key: 'myCategorys',
+          data: category.myCategorys,
         });
       }
     },

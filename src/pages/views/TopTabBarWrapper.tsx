@@ -11,7 +11,6 @@ import {RootState} from '@/models/index';
 import Touchable from '@/components/Touchable';
 
 const mapStateToProps = ({home}: RootState) => {
-  console.log('home: ', home);
   return {
     linearColors:
       home.carousels.length > 0
@@ -42,6 +41,11 @@ class TopTapBarWrapper extends React.Component<IProps> {
     null;
   }
 
+  goToCategory = () => {
+    const {navigation} = this.props;
+    navigation.navigate('Category');
+  };
+
   render() {
     let {gradientVisible, indicatorStyle, ...restProps} = this.props;
     let textStyle = styles.text;
@@ -67,7 +71,7 @@ class TopTapBarWrapper extends React.Component<IProps> {
             activeTintColor={activeTintColor}
             style={styles.tabBar}
           />
-          <Touchable style={styles.categoryBtn}>
+          <Touchable style={styles.categoryBtn} onPress={this.goToCategory}>
             <Text style={textStyle}>分类</Text>
           </Touchable>
         </View>
@@ -131,9 +135,9 @@ const styles = StyleSheet.create({
   whiteText: {
     color: '#fff',
   },
-  whiteBackgroundColor:{
-    backgroundColor:'#fff',
-  }
+  whiteBackgroundColor: {
+    backgroundColor: '#fff',
+  },
 });
 
 export default connector(TopTapBarWrapper);

@@ -8,12 +8,14 @@ import {
 } from '@react-navigation/stack';
 import BottomTabs from './BottomTabs';
 import Detail from '@/pages/Detail';
+import Category from '@/pages/Category';
 import {Platform, StyleSheet, StatusBar} from 'react-native';
 
 export type RootStackParamList = {
   BottomTabs: {
     screen?: string;
   };
+  Category: undefined;
   Detail: {
     id: number;
   };
@@ -28,10 +30,16 @@ export default function Navigator() {
         headerMode="float"
         screenOptions={{
           headerTitleAlign: 'center',
-          headerStatusBarHeight:StatusBar.currentHeight,//设置状态栏高度
+          ...Platform.select({
+            android: {
+              headerStatusBarHeight: StatusBar.currentHeight, //设置状态栏高度
+            },
+          }),
           headerStyleInterpolator: HeaderStyleInterpolators.forUIKit,
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
           gestureEnabled: true,
+          headerBackTitleVisible: false,
+          headerTintColor: '#333',
           gestureDirection: 'horizontal',
           headerStyle: {
             ...Platform.select({
@@ -46,6 +54,11 @@ export default function Navigator() {
           name="BottomTabs"
           component={BottomTabs}
           options={{headerTitle: '首页'}}
+        />
+        <Stack.Screen
+          name="Category"
+          component={Category}
+          options={{headerTitle: '分类'}}
         />
         <Stack.Screen
           name="Detail"

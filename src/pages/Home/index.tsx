@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     paddingVertical: 100,
   },
   backgroundColorGuess:{
-    backgroundColor:'#fff',
+    // backgroundColor:'#fff',
   }
 });
 
