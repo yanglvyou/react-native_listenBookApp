@@ -1,14 +1,17 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
+import {DragSortableView} from 'react-native-drag-sort';
+// import DraggableFlatList from 'react-native-draggable-flatlist'
 import {useNavigation, useIsFocused, useRoute} from '@react-navigation/native';
 import _ from 'lodash';
 import {CategoryModelState, ICategory} from '@/models/category';
 import {RootState} from '@/models/index';
-import Item from './Item';
+import Item, {parentWidth, itemHeight, marginTop} from './Item';
 import {RootStackNavigation} from '@/navigator/index';
 import HeaderRightBtn from './HeaderRightBtn';
 import Touchable from '@/components/Touchable';
+import {itemWidth} from 'styles/SliderEntry.style';
 
 interface IProps extends CategoryModelState {
   navigation: RootStackNavigation;
@@ -52,7 +55,7 @@ const Category: React.FC<IProps> = () => {
 
   function onPress(item: ICategory, index: number, selected: boolean) {
     const disabled = fixedItems.indexOf(index) > -1;
-    if(disabled) return;
+    if (disabled) return;
     if (isEdit) {
       if (selected) {
         dispatch({
@@ -85,15 +88,7 @@ const Category: React.FC<IProps> = () => {
 
   const _renderItem = (item: ICategory, index: number) => {
     const disabled = fixedItems.indexOf(index) > -1;
-    return (
-      <Touchable
-        key={item.id}
-        onPress={() => {
-          onPress(item, index, true);
-        }}>
-        <Item data={item} isEdit={isEdit} selected  disabled={disabled}/>
-      </Touchable>
-    );
+    return <Item data={item} isEdit={isEdit} selected disabled={disabled} />;
   };
 
   const _renderUnSelected = (item: ICategory, index: number) => {
@@ -109,10 +104,33 @@ const Category: React.FC<IProps> = () => {
     );
   };
 
+  const onDataChange = (data: ICategory) => {
+    dispatch({
+      type: 'category/setState',
+      payload: {
+        myCategorys: data,
+      },
+    });
+  };
+
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.classifyName}>我的分类</Text>
-      <View style={styles.classifyView}>{myCategorys.map(_renderItem)}</View>
+      <View style={styles.classifyDragView}>
+        <DragSortableView
+          dataSource={myCategorys}
+          renderItem={_renderItem}
+          sortable={isEdit}
+          keyExtractor={(item) => item.id}
+          onDataChange={() => {
+            onDataChange;
+          }}
+          parentWidth={parentWidth}
+          childrenWidth={itemWidth}
+          childrenHeight={itemHeight}
+          marginChildrenTop={marginTop}
+        />
+      </View>
       <View>
         {Object.keys(classifyGroup).map((classify) => {
           return (
@@ -154,6 +172,11 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     padding: 5,
   },
+  classifyDragView:{
+    flexDirection: 'row',
+    flexWrap:'wrap',
+    padding: 5,
+  }
 });
 
 export default Category;

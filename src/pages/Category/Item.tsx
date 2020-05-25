@@ -11,8 +11,12 @@ interface IProps {
   disabled?: boolean;
 }
 
-const parentWidth = viewportWidth - 10;
-const itemWidth = parentWidth / 4;
+export const parentWidth = viewportWidth - 10;
+export const itemWidth = parentWidth / 4;
+
+export const itemHeight = 48;
+
+export const marginTop=5;
 
 const Item: React.FC<IProps> = (props) => {
   const {data, isEdit, selected, disabled} = props;

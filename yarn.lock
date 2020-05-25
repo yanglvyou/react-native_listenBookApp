@@ -5623,6 +5623,16 @@ react-native-config@^1.0.0:
   resolved "https://registry.npm.taobao.org/react-native-config/download/react-native-config-1.0.0.tgz#fada8f79996db1eadcee9e221afd713c91f677e5"
   integrity sha1-+tqPeZltserc7p4iGv1xPJH2d+U=
 
+react-native-drag-sort@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.npm.taobao.org/react-native-drag-sort/download/react-native-drag-sort-2.1.1.tgz#a47c69deedf15e2e47af27cca8f684ef0600145d"
+  integrity sha1-pHxp3u3xXi5HryfMqPaE7wYAFF0=
+
+react-native-draggable-flatlist@^2.3.3:
+  version "2.3.3"
+  resolved "https://registry.npm.taobao.org/react-native-draggable-flatlist/download/react-native-draggable-flatlist-2.3.3.tgz#2fde54253095aefa0db18c2ac05e99cf35cb1c96"
+  integrity sha1-L95UJTCVrvoNsYwqwF6ZzzXLHJY=
+
 react-native-drawer@2.5.1:
   version "2.5.1"
   resolved "https://registry.npm.taobao.org/react-native-drawer/download/react-native-drawer-2.5.1.tgz#08b9314184f48c724f1b467f8859797369798654"
