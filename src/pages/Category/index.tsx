@@ -1,17 +1,16 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-import {DragSortableView} from 'react-native-drag-sort';
+import {DragSortableView, AutoDragSortableView} from 'react-native-drag-sort';
 // import DraggableFlatList from 'react-native-draggable-flatlist'
 import {useNavigation, useIsFocused, useRoute} from '@react-navigation/native';
 import _ from 'lodash';
 import {CategoryModelState, ICategory} from '@/models/category';
 import {RootState} from '@/models/index';
-import Item, {parentWidth, itemHeight, marginTop} from './Item';
+import Item, {parentWidth, itemHeight, marginTop, itemWidth} from './Item';
 import {RootStackNavigation} from '@/navigator/index';
 import HeaderRightBtn from './HeaderRightBtn';
 import Touchable from '@/components/Touchable';
-import {itemWidth} from 'styles/SliderEntry.style';
 
 interface IProps extends CategoryModelState {
   navigation: RootStackNavigation;
@@ -27,22 +26,31 @@ const Category: React.FC<IProps> = () => {
   const isFocused = useIsFocused();
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const route = useRoute();
+  // const route = useRoute();
   const {myCategorys, categorys, isEdit} = useSelector(
     ({category}: RootState) => category,
   );
-
   const onSubmit = () => {
     dispatch({
       type: 'category/toggleEditBtn',
     });
+    if(isEdit){
+      setTimeout(()=>{
+        navigation.goBack();
+      },0)
+    }
   };
+
+  useEffect(()=>{
+    console.log(888888888888);
+  },[])
+
   const classifyGroup = _.groupBy(categorys, (item) => item.classify);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => <HeaderRightBtn onSubmit={onSubmit} />,
     });
-  }, [navigation, route]);
+  }, [navigation,isEdit]);
 
   function onLongPress() {
     dispatch({
@@ -74,6 +82,10 @@ const Category: React.FC<IProps> = () => {
       });
     }
   }
+
+  const onClickItem = (data: ICategory[], item: ICategory) => {
+    onPress(item, data.indexOf(item), true);
+  };
 
   useEffect(() => {
     if (!isFocused) {
@@ -121,6 +133,7 @@ const Category: React.FC<IProps> = () => {
           dataSource={myCategorys}
           renderItem={_renderItem}
           sortable={isEdit}
+          fixedItems={fixedItems}
           keyExtractor={(item) => item.id}
           onDataChange={() => {
             onDataChange;
@@ -129,6 +142,7 @@ const Category: React.FC<IProps> = () => {
           childrenWidth={itemWidth}
           childrenHeight={itemHeight}
           marginChildrenTop={marginTop}
+          onClickItem={onClickItem}
         />
       </View>
       <View>
@@ -172,11 +186,11 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     padding: 5,
   },
-  classifyDragView:{
+  classifyDragView: {
     flexDirection: 'row',
-    flexWrap:'wrap',
+    flexWrap: 'wrap',
     padding: 5,
-  }
+  },
 });
 
 export default Category;

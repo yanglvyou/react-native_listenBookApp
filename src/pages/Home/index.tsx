@@ -31,11 +31,22 @@ import DefaultCarousel from '@/components/DefaultCarousel';
 import ChannelItem from './ChannelItem';
 import {IChannel} from '@/models/home';
 import IconFont from '@/assets/iconfont';
+import {RouteProp} from '@react-navigation/native';
+import {HomeParamList} from '@/navigator/HomeTabs';
 
-const mapStateToProps = ({home, loading}: RootState) => ({
-  carousels: home.carousels,
-  loading: loading.effects['home/fetchChannels'],
-});
+const mapStateToProps = (
+  state: RootState,
+  {route}: {route: RouteProp<HomeParamList, string>},
+) => {
+  const {namespace} = route.params;
+  const modelState = state[namespace];
+  return {
+    state,
+    namespace:route.params.namespace,
+    carousels: modelState.carousels,
+    loading: state.loading.effects[namespace + '/fetchChannels'],
+  };
+};
 const connector = connect(mapStateToProps);
 
 type ModelState = ConnectedProps<typeof connector>;
@@ -47,13 +58,13 @@ interface IState {
   refreshing: boolean;
 }
 
-const Home: FunctionComponent<IProps> = (props) => {
-  // const {carousels, loading} = props;
+const Home: FunctionComponent<IProps> = ({state,namespace}) => {
+
   const carousels = useSelector(({home}: RootState) => home.carousels);
   const {channels, gradientVisible} = useSelector(({home}: RootState) => home);
   const hasMore = useSelector(({home}: RootState) => home.pagination.hasMore);
   const loading = useSelector(
-    ({loading}: RootState) => loading.effects['home/fetchChannels'],
+    ({loading}: RootState) => state.loading.effects[namespace + '/fetchChannels'],
   );
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
@@ -101,9 +112,8 @@ const Home: FunctionComponent<IProps> = (props) => {
       <View>
         <Carousel data={carousels}></Carousel>
         <View style={styles.backgroundColorGuess}>
-        <Guess></Guess>
+          <Guess></Guess>
         </View>
-
       </View>
     );
   }
@@ -196,9 +206,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 100,
   },
-  backgroundColorGuess:{
+  backgroundColorGuess: {
     // backgroundColor:'#fff',
-  }
+  },
 });
 
 export default connector(Home);

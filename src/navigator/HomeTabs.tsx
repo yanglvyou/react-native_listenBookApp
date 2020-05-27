@@ -6,10 +6,40 @@ import {
 } from '@react-navigation/material-top-tabs';
 import Home from '@/pages/Home';
 import TopTapBarWrapper from '@/pages/views/TopTabBarWrapper';
+import {useSelector} from 'react-redux';
+import {RootState} from '../models';
+import {ICategory} from '@/models/category';
+import {createHomeModel} from '@/config/dva';
 
-const Tab = createMaterialTopTabNavigator();
+export type HomeParamList = {
+  [key: string]: {
+    namespace: string;
+  };
+};
 
-const HomeTabs = () => {
+interface IProps {
+  myCategorys: ICategory[];
+}
+
+const Tab = createMaterialTopTabNavigator<HomeParamList>();
+
+const HomeTabs: React.FC<IProps> = () => {
+  const {myCategorys} = useSelector(({category}: RootState) => category);
+  console.log('myCategorys: ', myCategorys,3333333333);
+
+  function _renderScreen(item: ICategory) {
+    // console.log('item: ', item);
+    createHomeModel(item.id);
+    return (
+      <Tab.Screen
+        key={item.id}
+        name={item.id}
+        component={Home}
+        options={{tabBarLabel: item.name}}
+        initialParams={{namespace: item.id}}></Tab.Screen>
+    );
+  }
+
   const renderTabBar = (props: MaterialTopTabBarProps) => {
     return <TopTapBarWrapper {...props}></TopTapBarWrapper>;
   };
@@ -33,6 +63,7 @@ const HomeTabs = () => {
         activeTintColor: '#f86442',
         inactiveTintColor: '#333',
       }}>
+      {myCategorys.map(_renderScreen)}
       <Tab.Screen
         name="Home"
         component={Home}
@@ -41,10 +72,10 @@ const HomeTabs = () => {
   );
 };
 
-const styles=StyleSheet.create({
-  sceneContainer:{
-    backgroundColor:'transparent',
-  }
-})
+const styles = StyleSheet.create({
+  sceneContainer: {
+    backgroundColor: 'transparent',
+  },
+});
 
 export default HomeTabs;
