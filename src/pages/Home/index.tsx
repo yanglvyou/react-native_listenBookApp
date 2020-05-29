@@ -29,7 +29,7 @@ import Carousel, {sildeHeight} from './Carousel';
 import Guess from './Guess';
 import DefaultCarousel from '@/components/DefaultCarousel';
 import ChannelItem from './ChannelItem';
-import {IChannel} from '@/models/home';
+import {IChannel, IGuess} from '@/models/home';
 import IconFont from '@/assets/iconfont';
 import {RouteProp} from '@react-navigation/native';
 import {HomeParamList} from '@/navigator/HomeTabs';
@@ -44,6 +44,9 @@ const mapStateToProps = (
     state,
     namespace:route.params.namespace,
     carousels: modelState.carousels,
+    channels: modelState.channels,
+    hasMore: modelState.pagination.hasMore,
+    gradientVisible: modelState.gradientVisible,
     loading: state.loading.effects[namespace + '/fetchChannels'],
   };
 };
@@ -58,38 +61,31 @@ interface IState {
   refreshing: boolean;
 }
 
-const Home: FunctionComponent<IProps> = ({state,namespace}) => {
-
-  const carousels = useSelector(({home}: RootState) => home.carousels);
-  const {channels, gradientVisible} = useSelector(({home}: RootState) => home);
-  const hasMore = useSelector(({home}: RootState) => home.pagination.hasMore);
-  const loading = useSelector(
-    ({loading}: RootState) => state.loading.effects[namespace + '/fetchChannels'],
-  );
+const Home: FunctionComponent<IProps> = (props) => {
+   const {carousels,channels,gradientVisible,hasMore,loading,namespace} =props;
+  // const carousels = useSelector(({home}: RootState) => home.carousels);
+  // const {channels, gradientVisible} = useSelector(({home}: RootState) => home);
+  // const hasMore = useSelector(({home}: RootState) => home.pagination.hasMore);
+  // const loading = useSelector(
+  //   ({loading}: RootState) => state.loading.effects[namespace + '/fetchChannels'],
+  // );
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    dispatch({type: 'home/fetchCarousels'});
+    dispatch({type: namespace+'/fetchCarousels'});
   }, []);
   useEffect(() => {
-    dispatch({type: 'home/fetchChannels'});
+    dispatch({type: namespace+'/fetchChannels'});
   }, []);
 
   useEffect(() => {
-    dispatch({type: 'home/fetchGuess'});
+    dispatch({type: namespace+'/fetchGuess'});
   }, []);
 
   const onPress = useCallback((data: IChannel) => {
     Alert.alert(`点击了${data.title}`);
   }, []);
-
-  // function goHome() {
-  //   const {navigation, num} = props;
-  //   navigation.navigate('Detail', {
-  //     id: 100,
-  //   });
-  // }
 
   //加载更多
   function _onEndReached() {
@@ -97,7 +93,7 @@ const Home: FunctionComponent<IProps> = ({state,namespace}) => {
     if (loading || !hasMore) {
       return;
     }
-    dispatch({type: 'home/fetchChannels', payload: {loadMore: true}});
+    dispatch({type: namespace+'/fetchChannels', payload: {loadMore: true}});
   }
 
   function _renderItem({item}: ListRenderItemInfo<IChannel>) {
@@ -107,12 +103,19 @@ const Home: FunctionComponent<IProps> = ({state,namespace}) => {
   function _keyExtractor(item: IChannel) {
     return item.id;
   }
+
+
+  function onGuessPress (item: IChannel | IGuess) {
+    Alert.alert(`${item.title}`);
+  };
+
+
   function header() {
     return (
       <View>
         <Carousel data={carousels}></Carousel>
         <View style={styles.backgroundColorGuess}>
-          <Guess></Guess>
+          <Guess namespace={namespace} onPress={(item)=>{onGuessPress(item)}}></Guess>
         </View>
       </View>
     );
@@ -148,7 +151,7 @@ const Home: FunctionComponent<IProps> = ({state,namespace}) => {
   function onRefresh() {
     setRefreshing(true);
     dispatch({
-      type: 'home/fetchChannels',
+      type: namespace+'/fetchChannels',
       callback: () => {
         setRefreshing(false);
       },
@@ -160,7 +163,7 @@ const Home: FunctionComponent<IProps> = ({state,namespace}) => {
     let newGradientVisible = offsetY < sildeHeight;
     if (newGradientVisible !== gradientVisible) {
       dispatch({
-        type: 'home/setState',
+        type: namespace+'/setState',
         payload: {gradientVisible: newGradientVisible},
       });
     }
@@ -207,7 +210,7 @@ const styles = StyleSheet.create({
     paddingVertical: 100,
   },
   backgroundColorGuess: {
-    // backgroundColor:'#fff',
+    backgroundColor:'#fff',
   },
 });
 

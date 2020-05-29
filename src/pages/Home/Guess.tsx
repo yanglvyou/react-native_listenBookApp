@@ -21,57 +21,73 @@ import {RootStackNavigation} from '@/navigator/index';
 import {IGuess} from '@/models/home';
 import Touchable from '@/components/Touchable';
 
-const Guess = React.memo(() => {
-  const dispatch = useDispatch();
+const mapStateToProps = ({home}: RootState) => ({
+  guess: home.guess,
+});
 
-  const {guess} = useSelector(({home}: RootState) => ({guess: home.guess}));
+const connector = connect(mapStateToProps);
 
-  function _keyExtractor(item: IGuess) {
+type ModelState = ConnectedProps<typeof connector>;
+
+interface IProps extends ModelState {
+  namespace: string;
+  onPress: (data: IGuess) => void;
+}
+
+class Guess extends React.Component<IProps> {
+  changeBatch = () => {
+    const {dispatch, namespace} = this.props;
+    dispatch({
+      type: namespace + '/fetchGuess',
+    });
+  };
+
+  _keyExtractor = (item: IGuess) => {
     return item.id;
-  }
+  };
 
-  function _renderItem({item}: {item: IGuess}) {
+  _renderItem = ({item}: {item: IGuess}) => {
+    const {onPress} = this.props;
     return (
       <Touchable
         onPress={() => {
-          Alert.alert('点击了');
+          onPress(item);
         }}
         style={styles.item}>
         <Image source={{uri: item.image}} style={styles.image}></Image>
         <Text numberOfLines={2}>{item.title}</Text>
       </Touchable>
     );
-  }
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.guessLike}>
-          <IconFont name="iconxihuantianchong" color="#f86442"></IconFont>
-          <Text style={styles.guessLikeTitle}>猜你喜欢</Text>
+  };
+  render() {
+    const {guess} = this.props;
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <View style={styles.guessLike}>
+            <IconFont name="iconxihuantianchong" color="#f86442"></IconFont>
+            <Text style={styles.guessLikeTitle}>猜你喜欢</Text>
+          </View>
+          <View style={styles.more}>
+            <Text style={styles.moreTitle}>更多</Text>
+            <IconFont name="icongengduo"></IconFont>
+          </View>
         </View>
-        <View style={styles.more}>
-          <Text style={styles.moreTitle}>更多</Text>
-          <IconFont name="icongengduo"></IconFont>
-        </View>
+        <FlatList
+          numColumns={3}
+          data={guess}
+          renderItem={this._renderItem}
+          style={styles.flatList}
+          keyExtractor={this._keyExtractor}
+        />
+        <Touchable onPress={this.changeBatch} style={styles.change}>
+          <IconFont name="iconziyuan" color="#f86442"></IconFont>
+          <Text style={styles.changeText}>換一批</Text>
+        </Touchable>
       </View>
-      <FlatList
-        numColumns={3}
-        data={guess}
-        renderItem={_renderItem}
-        style={styles.flatList}
-        keyExtractor={_keyExtractor}
-      />
-      <Touchable
-        onPress={() => {
-          dispatch({type: 'home/fetchGuess'});
-        }}
-        style={styles.change}>
-        <IconFont name="iconziyuan" color="#f86442"></IconFont>
-        <Text style={styles.changeText}>換一批</Text>
-      </Touchable>
-    </View>
-  );
-});
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -138,4 +154,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Guess;
+export default connector(Guess);

@@ -9,14 +9,17 @@ import {
 } from '@react-navigation/material-top-tabs';
 import {RootState} from '@/models/index';
 import Touchable from '@/components/Touchable';
+import { getActiveRouteName } from '@/utils/index';
 
-const mapStateToProps = ({home}: RootState) => {
+const mapStateToProps = (state: RootState,props:MaterialTopTabBarProps) => {
+  const routeName=getActiveRouteName(props.state)
+  const modelState=state[routeName];
   return {
     linearColors:
-      home.carousels.length > 0
-        ? home.carousels[home.activeCarouselIndex].colors
+    modelState.carousels.length > 0
+        ? modelState.carousels[modelState.activeCarouselIndex].colors
         : undefined,
-    gradientVisible: home.gradientVisible,
+    gradientVisible: modelState.gradientVisible,
   };
 };
 
@@ -50,9 +53,11 @@ class TopTapBarWrapper extends React.Component<IProps> {
     let {gradientVisible, indicatorStyle, ...restProps} = this.props;
     let textStyle = styles.text;
     let activeTintColor = '#333';
+    let inactiveTintColor='#333'
     if (gradientVisible) {
       textStyle = styles.whiteText;
       activeTintColor = '#fff';
+      inactiveTintColor='#fff';
       if (indicatorStyle) {
         //合并样式
         indicatorStyle = StyleSheet.compose(
@@ -69,6 +74,7 @@ class TopTapBarWrapper extends React.Component<IProps> {
             {...restProps}
             indicatorStyle={indicatorStyle}
             activeTintColor={activeTintColor}
+            inactiveTintColor={inactiveTintColor}
             style={styles.tabBar}
           />
           <Touchable style={styles.categoryBtn} onPress={this.goToCategory}>

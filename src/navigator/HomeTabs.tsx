@@ -25,10 +25,7 @@ const Tab = createMaterialTopTabNavigator<HomeParamList>();
 
 const HomeTabs: React.FC<IProps> = () => {
   const {myCategorys} = useSelector(({category}: RootState) => category);
-  console.log('myCategorys: ', myCategorys,3333333333);
-
   function _renderScreen(item: ICategory) {
-    // console.log('item: ', item);
     createHomeModel(item.id);
     return (
       <Tab.Screen
@@ -64,10 +61,6 @@ const HomeTabs: React.FC<IProps> = () => {
         inactiveTintColor: '#333',
       }}>
       {myCategorys.map(_renderScreen)}
-      <Tab.Screen
-        name="Home"
-        component={Home}
-        options={{tabBarLabel: '推荐'}}></Tab.Screen>
     </Tab.Navigator>
   );
 };
