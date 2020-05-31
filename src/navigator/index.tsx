@@ -1,5 +1,5 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, RouteProp} from '@react-navigation/native';
 import {
   createStackNavigator,
   StackNavigationProp,
@@ -9,19 +9,50 @@ import {
 import BottomTabs from './BottomTabs';
 import Detail from '@/pages/Detail';
 import Category from '@/pages/Category';
+import Album from '@/pages/Album';
 import {Platform, StyleSheet, StatusBar} from 'react-native';
+import Animated from 'react-native-reanimated';
 
 export type RootStackParamList = {
   BottomTabs: {
     screen?: string;
   };
   Category: undefined;
-  Detail: {
-    id: number;
+  Album:{
+   item:{
+    id:string;
+    title:string;
+    image:string;
+   }
   };
 };
 export type RootStackNavigation = StackNavigationProp<RootStackParamList>;
 let Stack = createStackNavigator<RootStackParamList>();
+
+
+function getOptions({route}:{route:RouteProp<RootStackParamList,'Album'>}){
+  return {
+    headerTitle:route.params.item.title,
+    headerTransparent:true,
+    headerTitleStyle:{
+      opacity:0
+    },
+    headerBackground:()=>{
+      return (
+        <Animated.View style={style.headerBackground}/>
+      )
+    }
+  }
+}
+
+const style=StyleSheet.create({
+  headerBackground:{
+    flex:1,
+    backgroundColor:'#fff',
+    opacity:0,
+  }
+})
+
 
 export default function Navigator() {
   return (
@@ -61,9 +92,9 @@ export default function Navigator() {
           options={{headerTitle: '分类'}}
         />
         <Stack.Screen
-          name="Detail"
-          component={Detail}
-          options={{headerTitle: '详情页'}}
+          name="Album"
+          component={Album}
+          options={getOptions}
         />
       </Stack.Navigator>
     </NavigationContainer>

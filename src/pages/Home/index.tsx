@@ -31,7 +31,7 @@ import DefaultCarousel from '@/components/DefaultCarousel';
 import ChannelItem from './ChannelItem';
 import {IChannel, IGuess} from '@/models/home';
 import IconFont from '@/assets/iconfont';
-import {RouteProp} from '@react-navigation/native';
+import {RouteProp, useNavigation} from '@react-navigation/native';
 import {HomeParamList} from '@/navigator/HomeTabs';
 
 const mapStateToProps = (
@@ -42,7 +42,7 @@ const mapStateToProps = (
   const modelState = state[namespace];
   return {
     state,
-    namespace:route.params.namespace,
+    namespace: route.params.namespace,
     carousels: modelState.carousels,
     channels: modelState.channels,
     hasMore: modelState.pagination.hasMore,
@@ -62,7 +62,15 @@ interface IState {
 }
 
 const Home: FunctionComponent<IProps> = (props) => {
-   const {carousels,channels,gradientVisible,hasMore,loading,namespace} =props;
+  const navigation = useNavigation();
+  const {
+    carousels,
+    channels,
+    gradientVisible,
+    hasMore,
+    loading,
+    namespace,
+  } = props;
   // const carousels = useSelector(({home}: RootState) => home.carousels);
   // const {channels, gradientVisible} = useSelector(({home}: RootState) => home);
   // const hasMore = useSelector(({home}: RootState) => home.pagination.hasMore);
@@ -73,18 +81,18 @@ const Home: FunctionComponent<IProps> = (props) => {
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    dispatch({type: namespace+'/fetchCarousels'});
+    dispatch({type: namespace + '/fetchCarousels'});
   }, []);
   useEffect(() => {
-    dispatch({type: namespace+'/fetchChannels'});
+    dispatch({type: namespace + '/fetchChannels'});
   }, []);
 
   useEffect(() => {
-    dispatch({type: namespace+'/fetchGuess'});
+    dispatch({type: namespace + '/fetchGuess'});
   }, []);
 
-  const onPress = useCallback((data: IChannel) => {
-    Alert.alert(`点击了${data.title}`);
+  const goToAlbum = useCallback((data: IChannel) => {
+    navigation.navigate('Album',{item:data});
   }, []);
 
   //加载更多
@@ -93,29 +101,31 @@ const Home: FunctionComponent<IProps> = (props) => {
     if (loading || !hasMore) {
       return;
     }
-    dispatch({type: namespace+'/fetchChannels', payload: {loadMore: true}});
+    dispatch({type: namespace + '/fetchChannels', payload: {loadMore: true}});
   }
 
   function _renderItem({item}: ListRenderItemInfo<IChannel>) {
-    return <ChannelItem data={item} onPress={onPress}></ChannelItem>;
+    return <ChannelItem data={item} onPress={goToAlbum}></ChannelItem>;
   }
 
   function _keyExtractor(item: IChannel) {
     return item.id;
   }
 
-
-  function onGuessPress (item: IChannel | IGuess) {
-    Alert.alert(`${item.title}`);
-  };
-
+  function onGuessPress(item: IChannel | IGuess) {
+    navigation.navigate('Album',{item:item});
+  }
 
   function header() {
     return (
       <View>
         <Carousel data={carousels}></Carousel>
         <View style={styles.backgroundColorGuess}>
-          <Guess namespace={namespace} onPress={(item)=>{onGuessPress(item)}}></Guess>
+          <Guess
+            namespace={namespace}
+            onPress={(item) => {
+              onGuessPress(item);
+            }}></Guess>
         </View>
       </View>
     );
@@ -151,7 +161,7 @@ const Home: FunctionComponent<IProps> = (props) => {
   function onRefresh() {
     setRefreshing(true);
     dispatch({
-      type: namespace+'/fetchChannels',
+      type: namespace + '/fetchChannels',
       callback: () => {
         setRefreshing(false);
       },
@@ -163,7 +173,7 @@ const Home: FunctionComponent<IProps> = (props) => {
     let newGradientVisible = offsetY < sildeHeight;
     if (newGradientVisible !== gradientVisible) {
       dispatch({
-        type: namespace+'/setState',
+        type: namespace + '/setState',
         payload: {gradientVisible: newGradientVisible},
       });
     }
@@ -210,7 +220,7 @@ const styles = StyleSheet.create({
     paddingVertical: 100,
   },
   backgroundColorGuess: {
-    backgroundColor:'#fff',
+    backgroundColor: '#fff',
   },
 });
 
