@@ -19,7 +19,7 @@ interface IProps {
   index: number;
 }
 
-const Tab: React.FC<IProps> = () => {
+const Tab = () => {
   const [tabIndex, setTabIndex] = React.useState(1);
   function onIndexChange(index: number) {
     setTabIndex(index);

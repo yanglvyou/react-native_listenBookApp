@@ -38,8 +38,11 @@ const Album: React.FC<IProps> = (props) => {
     const {image, title} = route.params.item;
     return (
       <View style={[styles.header, {paddingTop: headerHeight}]}>
-         <Image source={{uri:image}} style={styles.backgroundImage}></Image>
-         <BlurView blurType='light' blurAmount={5} style={StyleSheet.absoluteFillObject}></BlurView>
+        <Image source={{uri: image}} style={styles.backgroundImage}></Image>
+        <BlurView
+          blurType="light"
+          blurAmount={5}
+          style={StyleSheet.absoluteFillObject}></BlurView>
         <View style={styles.leftView}>
           <Image source={{uri: image}} style={styles.thumbnail}></Image>
           <Image source={coverRight} style={styles.coverRight}></Image>
@@ -47,7 +50,9 @@ const Album: React.FC<IProps> = (props) => {
         <View style={styles.rightView}>
           <Text style={styles.title}>{title}</Text>
           <View style={styles.summary}>
-            <Text numberOfLines={1} style={styles.summaryText}>{summary}</Text>
+            <Text numberOfLines={1} style={styles.summaryText}>
+              {summary}
+            </Text>
           </View>
           <View style={styles.author}>
             <Image source={{uri: author.avatar}} style={styles.avatar}></Image>
@@ -58,24 +63,27 @@ const Album: React.FC<IProps> = (props) => {
     );
   }
 
-  return <View style={styles.container}>{renderHeader()}
-    <Tab />
-  </View>;
+  return (
+    <View style={styles.container}>
+      {renderHeader()}
+      <Tab />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-  container:{
-   flex:1,
+  container: {
+    flex: 1,
   },
   header: {
     height: 260,
     flexDirection: 'row',
-    alignItems:'center',
+    alignItems: 'center',
     paddingHorizontal: 20,
   },
-  backgroundImage:{
+  backgroundImage: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor:'#eee',
+    backgroundColor: '#eee',
   },
   leftView: {
     marginRight: 26,
@@ -88,16 +96,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#fff',
   },
-  title:{
-    color:'#fff',
-    fontSize:18,
-    fontWeight:'900',
+  title: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   coverRight: {
     height: 98,
     position: 'absolute',
     right: -23,
-    resizeMode:'contain',
+    resizeMode: 'contain',
   },
   rightView: {
     flex: 1,
@@ -108,18 +116,18 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     borderRadius: 4,
   },
-  summaryText:{
-   color:'#fff',
+  summaryText: {
+    color: '#fff',
   },
-  name:{
-    color:'#fff',
+  name: {
+    color: '#fff',
   },
   avatar: {
     width: 26,
     height: 26,
     borderRadius: 13,
-    marginRight:8,
-    backgroundColor:'#eee',
+    marginRight: 8,
+    backgroundColor: '#eee',
   },
   author: {
     flexDirection: 'row',
