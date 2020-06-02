@@ -1,6 +1,10 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet, Image, Animated} from 'react-native';
+import {
+  PanGestureHandler,
+  PanGestureHandlerGestureEvent,
+} from 'react-native-gesture-handler';
 import {BlurView} from '@react-native-community/blur';
 import {useHeaderHeight} from '@react-navigation/stack';
 import {RootState} from '@/models/index';
@@ -25,7 +29,19 @@ const Album: React.FC<IProps> = (props) => {
   const dispatch = useDispatch();
   const {id} = route.params.item;
 
+  const translateY = useRef(new Animated.Value(0)).current;
+  const USE_NATIVE_DRIVER = true;
+
+  // const fadeIn = () => {
+  //   Animated.timing(translateY, {
+  //     toValue: -170,
+  //     duration: 3000,
+  //     useNativeDriver: false,
+  //   }).start();
+  // };
+
   useEffect(() => {
+    // fadeIn();
     dispatch({
       type: 'album/fetchAlbum',
       payload: {
@@ -33,6 +49,13 @@ const Album: React.FC<IProps> = (props) => {
       },
     });
   }, [navigation, route]);
+
+  const onGestureEvent = Animated.event(
+    [{nativeEvent: {translationY: translateY}}],
+    {
+      useNativeDriver: USE_NATIVE_DRIVER,
+    },
+  );
 
   function renderHeader() {
     const {image, title} = route.params.item;
@@ -64,10 +87,19 @@ const Album: React.FC<IProps> = (props) => {
   }
 
   return (
-    <View style={styles.container}>
-      {renderHeader()}
-      <Tab />
-    </View>
+    <PanGestureHandler onGestureEvent={onGestureEvent}>
+      <Animated.View
+        style={[
+          styles.container,
+
+          {
+            transform: [{translateY: translateY}],
+          },
+        ]}>
+        {renderHeader()}
+        <Tab />
+      </Animated.View>
+    </PanGestureHandler>
   );
 };
 
