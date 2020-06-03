@@ -1,4 +1,5 @@
 import React from 'react';
+import {Animated} from 'react-native';
 import {NavigationContainer, RouteProp} from '@react-navigation/native';
 import {
   createStackNavigator,
@@ -11,48 +12,48 @@ import Detail from '@/pages/Detail';
 import Category from '@/pages/Category';
 import Album from '@/pages/Album';
 import {Platform, StyleSheet, StatusBar} from 'react-native';
-import Animated from 'react-native-reanimated';
 
 export type RootStackParamList = {
   BottomTabs: {
     screen?: string;
   };
   Category: undefined;
-  Album:{
-   item:{
-    id:string;
-    title:string;
-    image:string;
-   }
+  Album: {
+    item: {
+      id: string;
+      title: string;
+      image: string;
+      opacity?: Animated.Value;
+    };
   };
 };
 export type RootStackNavigation = StackNavigationProp<RootStackParamList>;
 let Stack = createStackNavigator<RootStackParamList>();
 
-
-function getOptions({route}:{route:RouteProp<RootStackParamList,'Album'>}){
+function getOptions({route}: {route: RouteProp<RootStackParamList, 'Album'>}) {
   return {
-    headerTitle:route.params.item.title,
-    headerTransparent:true,
-    headerTitleStyle:{
-      opacity:0
+    headerTitle: route.params.item.title,
+    headerTransparent: true,
+    headerTitleStyle: {
+      opacity: route.params.opacity,
     },
-    headerBackground:()=>{
+    headerBackground: () => {
       return (
-        <Animated.View style={style.headerBackground}/>
-      )
-    }
-  }
+        <Animated.View
+          style={[style.headerBackground, {opacity: route.params.opacity}]}
+        />
+      );
+    },
+  };
 }
 
-const style=StyleSheet.create({
-  headerBackground:{
-    flex:1,
-    backgroundColor:'#fff',
-    opacity:0,
-  }
-})
-
+const style = StyleSheet.create({
+  headerBackground: {
+    flex: 1,
+    backgroundColor: '#fff',
+    opacity: 0,
+  },
+});
 
 export default function Navigator() {
   return (
@@ -91,11 +92,7 @@ export default function Navigator() {
           component={Category}
           options={{headerTitle: '分类'}}
         />
-        <Stack.Screen
-          name="Album"
-          component={Album}
-          options={getOptions}
-        />
+        <Stack.Screen name="Album" component={Album} options={getOptions} />
       </Stack.Navigator>
     </NavigationContainer>
   );

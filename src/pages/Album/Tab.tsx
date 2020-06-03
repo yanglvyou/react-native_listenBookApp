@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet, Platform} from 'react-native';
 import {TabView, TabBar, SceneRendererProps} from 'react-native-tab-view';
 import Introduction from './Introduction';
-import List from './List/index';
+import List, {ITabProps} from './List/index';
 
 interface IRoute {
   key: string;
@@ -19,7 +19,8 @@ interface IProps {
   index: number;
 }
 
-const Tab = () => {
+const Tab: React.FC<ITabProps> = (props) => {
+  const {panRef, tapRef, nativeRef, onScrollDrag} = props;
   const [tabIndex, setTabIndex] = React.useState(1);
   function onIndexChange(index: number) {
     setTabIndex(index);
@@ -30,7 +31,14 @@ const Tab = () => {
       case 'introduction':
         return <Introduction />;
       case 'albums':
-        return <List />;
+        return (
+          <List
+            panRef={panRef}
+            tapRef={tapRef}
+            nativeRef={nativeRef}
+            onScrollDrag={onScrollDrag}
+          />
+        );
     }
   }
 
@@ -72,18 +80,18 @@ const styles = StyleSheet.create({
   tabBar: {
     backgroundColor: '#fff',
     ...Platform.select({
-        android:{
-            elevation:0,
-            borderBottomColor:'#e3e3e3',
-            borderBottomWidth:StyleSheet.hairlineWidth,
-        }
-    })
+      android: {
+        elevation: 0,
+        borderBottomColor: '#e3e3e3',
+        borderBottomWidth: StyleSheet.hairlineWidth,
+      },
+    }),
   },
   indicator: {
     backgroundColor: '#eb6d48',
-    borderLeftWidth:25,
-    borderRightWidth:25,
-    borderColor:'#fff',
+    borderLeftWidth: 25,
+    borderRightWidth: 25,
+    borderColor: '#fff',
   },
 });
 

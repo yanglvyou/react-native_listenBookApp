@@ -1,9 +1,21 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {View, Text, StyleSheet, Image, Animated} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Animated,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+} from 'react-native';
 import {
   PanGestureHandler,
   PanGestureHandlerGestureEvent,
+  State,
+  PanGestureHandlerStateChangeEvent,
+  TapGestureHandler,
+  NativeViewGestureHandler,
 } from 'react-native-gesture-handler';
 import {BlurView} from '@react-native-community/blur';
 import {useHeaderHeight} from '@react-navigation/stack';
@@ -12,6 +24,7 @@ import {RouteProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '@/navigator/index';
 import coverRight from '@/assets/cover-right.png';
 import Tab from './Tab';
+import {viewportHeight} from '@/utils/index';
 
 interface IProps {
   headerHeight: number;
@@ -28,9 +41,26 @@ const Album: React.FC<IProps> = (props) => {
   const headerHeight = useHeaderHeight();
   const dispatch = useDispatch();
   const {id} = route.params.item;
+  const lastScrollY = useRef(new Animated.Value(0)).current;
+  let lastScrollYValue = 0;
+  const reverseLastScrollY = Animated.multiply(
+    new Animated.Value(-1),
+    lastScrollY,
+  );
+  const translationYValue = useRef(new Animated.Value(0)).current;
+  const translationYOffset = useRef(new Animated.Value(0)).current;
+  const translateY = Animated.add(
+    Animated.add(translationYValue, reverseLastScrollY),
+    translationYOffset,
+  );
+  let translationYStaticValue = 0;
+  const panRef = React.createRef<PanGestureHandler>();
+  const tapRef = React.createRef<TapGestureHandler>();
 
-  const translateY = useRef(new Animated.Value(0)).current;
+  const nativeRef = React.createRef<NativeViewGestureHandler>();
+  const HEADER_HEIGHT = 260;
   const USE_NATIVE_DRIVER = true;
+  const RANGE = [-(HEADER_HEIGHT - headerHeight), 0];
 
   // const fadeIn = () => {
   //   Animated.timing(translateY, {
@@ -41,7 +71,6 @@ const Album: React.FC<IProps> = (props) => {
   // };
 
   useEffect(() => {
-    // fadeIn();
     dispatch({
       type: 'album/fetchAlbum',
       payload: {
@@ -50,12 +79,64 @@ const Album: React.FC<IProps> = (props) => {
     });
   }, [navigation, route]);
 
+  useEffect(() => {
+      navigation.setParams({
+        opacity: translateY.interpolate({inputRange:RANGE, outputRange:[1, 0]}),
+      });
+  }, []);
+
   const onGestureEvent = Animated.event(
-    [{nativeEvent: {translationY: translateY}}],
+    [{nativeEvent: {translationY: translationYValue}}],
     {
       useNativeDriver: USE_NATIVE_DRIVER,
     },
   );
+
+  const onScrollDrag = Animated.event(
+    [{nativeEvent: {contentOffset: {y: lastScrollY}}}],
+    {
+      useNativeDriver: USE_NATIVE_DRIVER,
+      listener: ({nativeEvent}: NativeSyntheticEvent<NativeScrollEvent>) => {
+        lastScrollYValue = nativeEvent.contentOffset.y;
+      },
+    },
+  );
+
+  const onHandlerStateChange = ({
+    nativeEvent,
+  }: PanGestureHandlerStateChangeEvent) => {
+    if (nativeEvent.oldState === State.ACTIVE) {
+      let {translationY} = nativeEvent;
+      translationY -= lastScrollYValue;
+      // offset=value;
+      translationYOffset.extractOffset();
+      translationYOffset.setValue(translationY);
+      //value = value + offset;
+      translationYOffset.flattenOffset();
+      translationYValue.setValue(0);
+      let maxDeltaY = -RANGE[0] - translationYStaticValue;
+      translationYStaticValue += translationY;
+      if (translationYStaticValue < RANGE[0]) {
+        translationYStaticValue = RANGE[0];
+        Animated.timing(translationYOffset, {
+          toValue: RANGE[0],
+          useNativeDriver: USE_NATIVE_DRIVER,
+        }).start();
+        maxDeltaY = RANGE[1];
+      } else if (translationYStaticValue > RANGE[1]) {
+        translationYStaticValue = RANGE[1];
+        Animated.timing(translationYOffset, {
+          toValue: RANGE[1],
+          useNativeDriver: USE_NATIVE_DRIVER,
+        }).start();
+        maxDeltaY = -RANGE[0];
+      }
+      if (tapRef.current) {
+        const tap: any = tapRef.current;
+        tap.setNativeProps({maxDeltaY});
+      }
+    }
+  };
 
   function renderHeader() {
     const {image, title} = route.params.item;
@@ -87,19 +168,42 @@ const Album: React.FC<IProps> = (props) => {
   }
 
   return (
-    <PanGestureHandler onGestureEvent={onGestureEvent}>
-      <Animated.View
-        style={[
-          styles.container,
+    <TapGestureHandler maxDeltaY={-RANGE[0]} ref={tapRef}>
+      <View style={styles.container}>
+        <PanGestureHandler
+          simultaneousHandlers={[tapRef, nativeRef]}
+          ref={panRef}
+          onGestureEvent={onGestureEvent}
+          onHandlerStateChange={onHandlerStateChange}>
+          <Animated.View
+            style={[
+              styles.container,
 
-          {
-            transform: [{translateY: translateY}],
-          },
-        ]}>
-        {renderHeader()}
-        <Tab />
-      </Animated.View>
-    </PanGestureHandler>
+              {
+                transform: [
+                  {
+                    translateY: translateY.interpolate({
+                      inputRange: RANGE,
+                      outputRange: RANGE,
+                      extrapolate: 'clamp',
+                    }),
+                  },
+                ],
+              },
+            ]}>
+            {renderHeader()}
+            <View style={{height: viewportHeight - headerHeight}}>
+              <Tab
+                panRef={panRef}
+                tapRef={tapRef}
+                nativeRef={nativeRef}
+                onScrollDrag={onScrollDrag}
+              />
+            </View>
+          </Animated.View>
+        </PanGestureHandler>
+      </View>
+    </TapGestureHandler>
   );
 };
 
