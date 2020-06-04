@@ -23,8 +23,8 @@ export type RootStackParamList = {
       id: string;
       title: string;
       image: string;
-      opacity?: Animated.Value;
     };
+    opacity?: Animated.Value;
   };
 };
 export type RootStackNavigation = StackNavigationProp<RootStackParamList>;

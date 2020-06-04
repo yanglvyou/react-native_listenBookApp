@@ -4,6 +4,7 @@ import {
   createMaterialTopTabNavigator,
   MaterialTopTabBarProps,
 } from '@react-navigation/material-top-tabs';
+import ViewPagerAdapter from 'react-native-tab-view-viewpager-adapter';
 import Home from '@/pages/Home';
 import TopTapBarWrapper from '@/pages/views/TopTabBarWrapper';
 import {useSelector} from 'react-redux';
@@ -43,6 +44,7 @@ const HomeTabs: React.FC<IProps> = () => {
   return (
     <Tab.Navigator
       lazy
+      pager={props=><ViewPagerAdapter {...props} />}
       tabBar={renderTabBar}
       sceneContainerStyle={styles.sceneContainer}
       tabBarOptions={{
