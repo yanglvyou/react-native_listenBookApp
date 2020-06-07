@@ -4,6 +4,7 @@
 import React, { FunctionComponent } from 'react';
 import { ViewProps } from 'react-native';
 import { GProps } from 'react-native-svg';
+import IconarrowDown from './IconarrowDown';
 import Iconshijian from './Iconshijian';
 import Iconjia from './Iconjia';
 import Iconjian from './Iconjian';
@@ -25,7 +26,7 @@ import Iconyemian1 from './Iconyemian1';
 import Iconindex from './Iconindex';
 import Iconindex1 from './Iconindex1';
 
-export type IconNames = 'iconshijian' | 'iconjia' | 'iconjian' | 'iconmeiyoushuju' | 'iconshengyin' | 'iconicon-test' | 'iconshengyin1' | 'iconxihuan-' | 'iconxihuantianchong' | 'iconziyuan' | 'icongengduo' | 'iconfaxian' | 'iconiconfontxingxing' | 'iconzhanghao' | 'iconren' | 'iconshoucang' | 'iconyemian' | 'iconyemian1' | 'iconindex' | 'iconindex1';
+export type IconNames = 'iconarrow-down' | 'iconshijian' | 'iconjia' | 'iconjian' | 'iconmeiyoushuju' | 'iconshengyin' | 'iconicon-test' | 'iconshengyin1' | 'iconxihuan-' | 'iconxihuantianchong' | 'iconziyuan' | 'icongengduo' | 'iconfaxian' | 'iconiconfontxingxing' | 'iconzhanghao' | 'iconren' | 'iconshoucang' | 'iconyemian' | 'iconyemian1' | 'iconindex' | 'iconindex1';
 
 interface Props extends GProps, ViewProps {
   name: IconNames;
@@ -35,6 +36,8 @@ interface Props extends GProps, ViewProps {
 
 const IconFont: FunctionComponent<Props> = ({ name, ...rest }) => {
   switch (name) {
+    case 'iconarrow-down':
+      return <IconarrowDown {...rest} />;
     case 'iconshijian':
       return <Iconshijian {...rest} />;
     case 'iconjia':

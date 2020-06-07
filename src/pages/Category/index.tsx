@@ -34,23 +34,19 @@ const Category: React.FC<IProps> = () => {
     dispatch({
       type: 'category/toggleEditBtn',
     });
-    if(isEdit){
-      setTimeout(()=>{
+    if (isEdit) {
+      setTimeout(() => {
         navigation.goBack();
-      },0)
+      }, 0);
     }
   };
-
-  useEffect(()=>{
-    console.log(888888888888);
-  },[])
 
   const classifyGroup = _.groupBy(categorys, (item) => item.classify);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => <HeaderRightBtn onSubmit={onSubmit} />,
     });
-  }, [navigation,isEdit]);
+  }, [navigation, isEdit]);
 
   function onLongPress() {
     dispatch({

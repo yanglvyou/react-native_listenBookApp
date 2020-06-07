@@ -8,7 +8,7 @@ import IconFont from '@/assets/iconfont';
 interface IProps {
   data: IProgram;
   index: number;
-  onPress: (data: IProgram) => void;
+  onPress: (data: IProgram,index:number) => void;
 }
 
 const Item: React.FC<IProps> = (props) => {
@@ -17,7 +17,7 @@ const Item: React.FC<IProps> = (props) => {
     console.log(11111111);
     const {onPress} = props;
     if (typeof onPress === 'function') {
-      onPress(data);
+      onPress(data,index);
     }
   };
 

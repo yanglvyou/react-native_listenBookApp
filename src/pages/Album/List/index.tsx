@@ -21,13 +21,14 @@ export interface ITabProps {
   tapRef:React.RefObject<TapGestureHandler>,
   nativeRef:React.RefObject<NativeViewGestureHandler>,
   onScrollDrag:(event:NativeSyntheticEvent<NativeScrollEvent>)=> void,
+  onItemPress:(data:IProgram,index:number)=>void;
 }
 
 const List: React.FC<ITabProps> = (props) => {
-  const {panRef,tapRef,nativeRef,onScrollDrag} =props
+  const {panRef,tapRef,nativeRef,onScrollDrag,onItemPress} =props
   const {list} = useSelector(({album}: RootState) => album);
-  function onPress(data: IProgram) {
-    Alert.alert('节目');
+  function onPress(data: IProgram,index:number) {
+    onItemPress(data,index)
   }
   function _renderItem({item, index}: ListRenderItemInfo<IProgram>) {
     return (
@@ -35,7 +36,7 @@ const List: React.FC<ITabProps> = (props) => {
         data={item}
         index={index}
         onPress={() => {
-          onPress(item);
+          onPress(item,index);
         }}></Item>
     );
   }

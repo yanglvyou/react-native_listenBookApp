@@ -25,11 +25,13 @@ import {RootStackParamList} from '@/navigator/index';
 import coverRight from '@/assets/cover-right.png';
 import Tab from './Tab';
 import {viewportHeight} from '@/utils/index';
+import { IProgram } from '@/models/album';
 
 interface IProps {
   headerHeight: number;
   state: RootState;
   route: RouteProp<RootStackParamList, 'Album'>;
+
 }
 
 const Album: React.FC<IProps> = (props) => {
@@ -37,18 +39,16 @@ const Album: React.FC<IProps> = (props) => {
   const isFocused = useIsFocused();
 
   const {summary, author} = useSelector(({album}: RootState) => album);
-  console.log('author: ', author);
-  console.log('isFocused: ', isFocused);
-
+  const loading=useSelector((state:RootState)=>state.loading.effects['album/fetchAlbum'])
   const navigation = useNavigation();
   const headerHeight = useHeaderHeight();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (!isFocused) {
-      dispatch({type: 'album/resetState'});
-    }
-  }, [isFocused]);
+  // useEffect(() => {
+  //   if (!isFocused) {
+  //     dispatch({type: 'album/resetState'});
+  //   }
+  // }, [isFocused]);
   const {id} = route.params.item;
   const lastScrollY = useRef(new Animated.Value(0)).current;
   let lastScrollYValue = 0;
@@ -92,6 +92,10 @@ const Album: React.FC<IProps> = (props) => {
       useNativeDriver: USE_NATIVE_DRIVER,
     },
   );
+
+  const onItemPress=(data:IProgram,index:number)=>{
+    navigation.navigate("Detail",{})
+  }
 
   const onScrollDrag = Animated.event(
     [{nativeEvent: {contentOffset: {y: lastScrollY}}}],
@@ -177,7 +181,7 @@ const Album: React.FC<IProps> = (props) => {
 
   return (
     <TapGestureHandler maxDeltaY={-RANGE[0]} ref={tapRef}>
-      {summary !=='' ? (
+      {!loading ? (
         <View style={styles.container} pointerEvents="box-none">
           <PanGestureHandler
             simultaneousHandlers={[tapRef, nativeRef]}
@@ -207,6 +211,7 @@ const Album: React.FC<IProps> = (props) => {
                   tapRef={tapRef}
                   nativeRef={nativeRef}
                   onScrollDrag={onScrollDrag}
+                  onItemPress={onItemPress}
                 />
               </View>
             </Animated.View>
