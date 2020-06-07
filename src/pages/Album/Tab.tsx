@@ -23,6 +23,7 @@ const Tab: React.FC<ITabProps> = (props) => {
   const {panRef, tapRef, nativeRef, onScrollDrag} = props;
   const [tabIndex, setTabIndex] = React.useState(1);
   function onIndexChange(index: number) {
+    console.log(2222222);
     setTabIndex(index);
   }
 
@@ -66,7 +67,7 @@ const Tab: React.FC<ITabProps> = (props) => {
       }}
       onIndexChange={onIndexChange}
       renderTabBar={renderTabBar}
-      renderScene={_renderScene}></TabView>
+      renderScene={_renderScene} />
   );
 };
 

@@ -4,21 +4,12 @@ import React, {
   useCallback,
   useState,
 } from 'react';
-import {
-  connect,
-  ConnectedProps,
-  useDispatch,
-  useSelector,
-  shallowEqual,
-} from 'react-redux';
+import {connect, ConnectedProps, useDispatch} from 'react-redux';
 import {
   View,
   Text,
-  Button,
-  ScrollView,
   FlatList,
   ListRenderItemInfo,
-  Alert,
   StyleSheet,
   NativeSyntheticEvent,
   NativeScrollEvent,
@@ -27,7 +18,7 @@ import {RootStackNavigation} from '@/navigator/index';
 import {RootState} from '@/models/index';
 import Carousel, {sildeHeight} from './Carousel';
 import Guess from './Guess';
-import DefaultCarousel from '@/components/DefaultCarousel';
+// import DefaultCarousel from '@/components/DefaultCarousel';
 import ChannelItem from './ChannelItem';
 import {IChannel, IGuess} from '@/models/home';
 import IconFont from '@/assets/iconfont';
@@ -71,12 +62,6 @@ const Home: FunctionComponent<IProps> = (props) => {
     loading,
     namespace,
   } = props;
-  // const carousels = useSelector(({home}: RootState) => home.carousels);
-  // const {channels, gradientVisible} = useSelector(({home}: RootState) => home);
-  // const hasMore = useSelector(({home}: RootState) => home.pagination.hasMore);
-  // const loading = useSelector(
-  //   ({loading}: RootState) => state.loading.effects[namespace + '/fetchChannels'],
-  // );
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -92,7 +77,7 @@ const Home: FunctionComponent<IProps> = (props) => {
   }, []);
 
   const goToAlbum = useCallback((data: IChannel) => {
-    navigation.navigate('Album',{item:data});
+    navigation.navigate('Album', {item: data});
   }, []);
 
   //加载更多
@@ -113,7 +98,7 @@ const Home: FunctionComponent<IProps> = (props) => {
   }
 
   function onGuessPress(item: IChannel | IGuess) {
-    navigation.navigate('Album',{item:item});
+    navigation.navigate('Album', {item: item});
   }
 
   function header() {
@@ -180,19 +165,21 @@ const Home: FunctionComponent<IProps> = (props) => {
   }
 
   return (
-    <FlatList
-      ListHeaderComponent={header}
-      ListFooterComponent={footer()}
-      ListEmptyComponent={empty()}
-      data={channels}
-      onRefresh={onRefresh}
-      refreshing={refreshing}
-      renderItem={_renderItem}
-      keyExtractor={_keyExtractor}
-      onEndReached={_onEndReached}
-      onEndReachedThreshold={0.5}
-      onScroll={_onScroll}
-    />
+    <View style={{backgroundColor: '#fff'}}>
+      <FlatList
+        ListHeaderComponent={header}
+        ListFooterComponent={footer()}
+        ListEmptyComponent={empty()}
+        data={channels}
+        onRefresh={onRefresh}
+        refreshing={refreshing}
+        renderItem={_renderItem}
+        keyExtractor={_keyExtractor}
+        onEndReached={_onEndReached}
+        onEndReachedThreshold={0.5}
+        onScroll={_onScroll}
+      />
+    </View>
   );
 };
 

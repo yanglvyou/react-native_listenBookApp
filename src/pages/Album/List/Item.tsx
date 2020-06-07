@@ -1,5 +1,6 @@
-import React from 'react';
-import {Text, StyleSheet, View} from 'react-native';
+import React, {useRef, useEffect} from 'react';
+import {Text, StyleSheet, View, Animated, Easing} from 'react-native';
+// import LottieView from 'lottie-react-native';
 import {IProgram} from '@/models/album';
 import Touchable from '@/components/Touchable';
 import IconFont from '@/assets/iconfont';
@@ -13,11 +14,14 @@ interface IProps {
 const Item: React.FC<IProps> = (props) => {
   const {data, index} = props;
   const onPress = () => {
+    console.log(11111111);
     const {onPress} = props;
     if (typeof onPress === 'function') {
       onPress(data);
     }
   };
+
+
   return (
     <Touchable style={styles.item} onPress={onPress}>
       <Text style={styles.serial}>{index + 1}</Text>
@@ -78,14 +82,14 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   playVolume: {
-   marginHorizontal:5,
+    marginHorizontal: 5,
   },
   duration: {
-    marginHorizontal:5,
+    marginHorizontal: 5,
   },
-  date:{
-      color:'#939393',
-  }
+  date: {
+    color: '#939393',
+  },
 });
 
 export default Item;

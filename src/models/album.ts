@@ -36,6 +36,7 @@ interface AlbumModel extends Model {
   };
   reducers: {
     setState: Reducer<IAlbumModelState>;
+    resetState: Reducer;
   };
 }
 
@@ -68,8 +69,10 @@ const albumModel: AlbumModel = {
         ...payload,
       };
     },
+    resetState(state = initialState,{payload}) {
+      return {...state, ...initialState};
+    },
   },
 };
-
 
 export default albumModel;

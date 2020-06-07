@@ -11,16 +11,16 @@ import {
 } from 'react-native';
 import {
   PanGestureHandler,
-  PanGestureHandlerGestureEvent,
   State,
   PanGestureHandlerStateChangeEvent,
   TapGestureHandler,
   NativeViewGestureHandler,
 } from 'react-native-gesture-handler';
+import LottieView from 'lottie-react-native';
 import {BlurView} from '@react-native-community/blur';
 import {useHeaderHeight} from '@react-navigation/stack';
 import {RootState} from '@/models/index';
-import {RouteProp, useNavigation} from '@react-navigation/native';
+import {RouteProp, useNavigation, useIsFocused} from '@react-navigation/native';
 import {RootStackParamList} from '@/navigator/index';
 import coverRight from '@/assets/cover-right.png';
 import Tab from './Tab';
@@ -34,12 +34,21 @@ interface IProps {
 
 const Album: React.FC<IProps> = (props) => {
   const {route} = props;
-  const {summary, list, introduction, author} = useSelector(
-    ({album}: RootState) => album,
-  );
+  const isFocused = useIsFocused();
+
+  const {summary, author} = useSelector(({album}: RootState) => album);
+  console.log('author: ', author);
+  console.log('isFocused: ', isFocused);
+
   const navigation = useNavigation();
   const headerHeight = useHeaderHeight();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!isFocused) {
+      dispatch({type: 'album/resetState'});
+    }
+  }, [isFocused]);
   const {id} = route.params.item;
   const lastScrollY = useRef(new Animated.Value(0)).current;
   let lastScrollYValue = 0;
@@ -62,14 +71,6 @@ const Album: React.FC<IProps> = (props) => {
   const USE_NATIVE_DRIVER = true;
   const RANGE = [-(HEADER_HEIGHT - headerHeight), 0];
 
-  // const fadeIn = () => {
-  //   Animated.timing(translateY, {
-  //     toValue: -170,
-  //     duration: 3000,
-  //     useNativeDriver: false,
-  //   }).start();
-  // };
-
   useEffect(() => {
     dispatch({
       type: 'album/fetchAlbum',
@@ -77,12 +78,12 @@ const Album: React.FC<IProps> = (props) => {
         id,
       },
     });
-  }, [navigation, route]);
+  }, [navigation]);
 
   useEffect(() => {
-      navigation.setParams({
-        opacity: translateY.interpolate({inputRange:RANGE, outputRange:[1, 0]}),
-      });
+    navigation.setParams({
+      opacity: translateY.interpolate({inputRange: RANGE, outputRange: [1, 0]}),
+    });
   }, []);
 
   const onGestureEvent = Animated.event(
@@ -151,6 +152,13 @@ const Album: React.FC<IProps> = (props) => {
           <Image source={{uri: image}} style={styles.thumbnail}></Image>
           <Image source={coverRight} style={styles.coverRight}></Image>
         </View>
+        {false && (
+          <LottieView
+            source={require('../../assets/animation/10970.json')}
+            autoPlay
+            loop
+          />
+        )}
         <View style={styles.rightView}>
           <Text style={styles.title}>{title}</Text>
           <View style={styles.summary}>
@@ -169,40 +177,48 @@ const Album: React.FC<IProps> = (props) => {
 
   return (
     <TapGestureHandler maxDeltaY={-RANGE[0]} ref={tapRef}>
-      <View style={styles.container}>
-        <PanGestureHandler
-          simultaneousHandlers={[tapRef, nativeRef]}
-          ref={panRef}
-          onGestureEvent={onGestureEvent}
-          onHandlerStateChange={onHandlerStateChange}>
-          <Animated.View
-            style={[
-              styles.container,
+      {summary !=='' ? (
+        <View style={styles.container} pointerEvents="box-none">
+          <PanGestureHandler
+            simultaneousHandlers={[tapRef, nativeRef]}
+            ref={panRef}
+            onGestureEvent={onGestureEvent}
+            onHandlerStateChange={onHandlerStateChange}>
+            <Animated.View
+              style={[
+                styles.container,
 
-              {
-                transform: [
-                  {
-                    translateY: translateY.interpolate({
-                      inputRange: RANGE,
-                      outputRange: RANGE,
-                      extrapolate: 'clamp',
-                    }),
-                  },
-                ],
-              },
-            ]}>
-            {renderHeader()}
-            <View style={{height: viewportHeight - headerHeight}}>
-              <Tab
-                panRef={panRef}
-                tapRef={tapRef}
-                nativeRef={nativeRef}
-                onScrollDrag={onScrollDrag}
-              />
-            </View>
-          </Animated.View>
-        </PanGestureHandler>
-      </View>
+                {
+                  transform: [
+                    {
+                      translateY: translateY.interpolate({
+                        inputRange: RANGE,
+                        outputRange: RANGE,
+                        extrapolate: 'clamp',
+                      }),
+                    },
+                  ],
+                },
+              ]}>
+              {renderHeader()}
+              <View style={{height: viewportHeight - headerHeight}}>
+                <Tab
+                  panRef={panRef}
+                  tapRef={tapRef}
+                  nativeRef={nativeRef}
+                  onScrollDrag={onScrollDrag}
+                />
+              </View>
+            </Animated.View>
+          </PanGestureHandler>
+        </View>
+      ) : (
+        <LottieView
+          source={require('../../assets/animation/22127-dots-load.json')}
+          autoPlay
+          loop
+        />
+      )}
     </TapGestureHandler>
   );
 };

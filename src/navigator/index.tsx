@@ -8,7 +8,7 @@ import {
   CardStyleInterpolators,
 } from '@react-navigation/stack';
 import BottomTabs from './BottomTabs';
-import Detail from '@/pages/Detail';
+// import Detail from '@/pages/Detail';
 import Category from '@/pages/Category';
 import Album from '@/pages/Album';
 import {Platform, StyleSheet, StatusBar} from 'react-native';
