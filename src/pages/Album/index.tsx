@@ -25,13 +25,12 @@ import {RootStackParamList} from '@/navigator/index';
 import coverRight from '@/assets/cover-right.png';
 import Tab from './Tab';
 import {viewportHeight} from '@/utils/index';
-import { IProgram } from '@/models/album';
+import {IProgram} from '@/models/album';
 
 interface IProps {
   headerHeight: number;
   state: RootState;
   route: RouteProp<RootStackParamList, 'Album'>;
-
 }
 
 const Album: React.FC<IProps> = (props) => {
@@ -39,7 +38,9 @@ const Album: React.FC<IProps> = (props) => {
   const isFocused = useIsFocused();
 
   const {summary, author} = useSelector(({album}: RootState) => album);
-  const loading=useSelector((state:RootState)=>state.loading.effects['album/fetchAlbum'])
+  const loading = useSelector(
+    (state: RootState) => state.loading.effects['album/fetchAlbum'],
+  );
   const navigation = useNavigation();
   const headerHeight = useHeaderHeight();
   const dispatch = useDispatch();
@@ -93,9 +94,9 @@ const Album: React.FC<IProps> = (props) => {
     },
   );
 
-  const onItemPress=(data:IProgram,index:number)=>{
-    navigation.navigate("Detail",{})
-  }
+  const onItemPress = (data: IProgram, index: number) => {
+    navigation.navigate('Detail', {id: data.id});
+  };
 
   const onScrollDrag = Animated.event(
     [{nativeEvent: {contentOffset: {y: lastScrollY}}}],
