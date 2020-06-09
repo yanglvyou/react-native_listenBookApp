@@ -5776,6 +5776,11 @@ react-native-screens@^2.7.0:
   resolved "https://registry.npm.taobao.org/react-native-screens/download/react-native-screens-2.7.0.tgz#2d3cf3c39a665e9ca1c774264fccdb90e7944047"
   integrity sha1-LTzzw5pmXpyhx3QmT8zbkOeUQEc=
 
+react-native-slider-x@^0.11.3:
+  version "0.11.3"
+  resolved "https://registry.npm.taobao.org/react-native-slider-x/download/react-native-slider-x-0.11.3.tgz#a1a7561e807c5d38019e9bdffbef2cd2e75ef7e9"
+  integrity sha1-oadWHoB8XTgBnpvf++8s0ude9+k=
+
 react-native-snap-carousel@^3.9.0:
   version "3.9.0"
   resolved "https://registry.npm.taobao.org/react-native-snap-carousel/download/react-native-snap-carousel-3.9.0.tgz#017793ca3f5e901ccd5a3117d79bb18ec08928a3"

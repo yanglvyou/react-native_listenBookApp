@@ -83,7 +83,6 @@ const play = () => {
     if (sound) {
       sound.play((success) => {
         if (success) {
-            console.log('success: ', success);
           resolve();
         } else {
           reject();
