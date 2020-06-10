@@ -27,24 +27,43 @@ const Detail: React.FC<IProps> = (props) => {
     dispatch({type: playState === 'playing' ? 'player/pause' : 'player/play'});
   };
 
+  const previous = () => {
+    dispatch({type: 'player/previous'});
+  };
+
+  const next = () => {
+    dispatch({type: 'player/next'});
+  };
+
   return (
     <View style={styles.container}>
-      <Touchable onPress={toggle}>
-        <PlaySlider />
-        <IconFont
-          name={playState === 'playing' ? 'iconzantingtingzhi' : 'iconbofang'}
-          size={35}
-          color="#fff"
-        />
-      </Touchable>
+      <PlaySlider />
+      <View style={styles.btnWrapper}>
+        <Touchable onPress={previous}>
+          <IconFont name="iconshangyishou" size={35} color="#fff" />
+        </Touchable>
+        <Touchable onPress={toggle}>
+          <IconFont
+            name={playState === 'playing' ? 'iconzantingtingzhi' : 'iconbofang'}
+            size={35}
+            color="#fff"
+          />
+        </Touchable>
+        <Touchable onPress={next}>
+          <IconFont name="iconxiayishou" size={35} color="#fff" />
+        </Touchable>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 200,
-    // alignItems: 'center',
+    paddingTop: 300,
+  },
+  btnWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
 });
 

@@ -35,9 +35,9 @@ interface IProps {
 
 const Album: React.FC<IProps> = (props) => {
   const {route} = props;
-  const isFocused = useIsFocused();
+  // const isFocused = useIsFocused();
 
-  const {summary, author} = useSelector(({album}: RootState) => album);
+  const {summary, author, list} = useSelector(({album}: RootState) => album);
   const loading = useSelector(
     (state: RootState) => state.loading.effects['album/fetchAlbum'],
   );
@@ -95,6 +95,16 @@ const Album: React.FC<IProps> = (props) => {
   );
 
   const onItemPress = (data: IProgram, index: number) => {
+    const previousItem = list[index - 1];
+    const nextItem = list[index - 1];
+    dispatch({
+      type: 'player/setState',
+      payload: {
+        previousId: previousItem ? previousItem.id : '',
+        nextId: nextItem ? nextItem.id : '',
+        sounds: list.map((item) => ({id: item.id, title: item.title})),
+      },
+    });
     navigation.navigate('Detail', {id: data.id});
   };
 
