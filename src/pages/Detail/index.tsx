@@ -1,7 +1,7 @@
-import React, {FunctionComponent, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {View, Text, Button, StyleSheet} from 'react-native';
 import {RootStackNavigation, ModalStackParamList} from '@/navigator/index';
-import {RouteProp, useRoute} from '@react-navigation/native';
+import {RouteProp, useRoute, useNavigation} from '@react-navigation/native';
 import {RootState} from '@/models/index';
 import {useSelector, useDispatch} from 'react-redux';
 import Touchable from '@/components/Touchable';
@@ -16,12 +16,17 @@ interface IProps {
 const Detail: React.FC<IProps> = (props) => {
   const {route} = props;
   const dispatch = useDispatch();
-  const {id, soundUrl, playState} = useSelector(
+  const navigation = useNavigation();
+  const {id, soundUrl, playState, title, previousId, nextId} = useSelector(
     ({player}: RootState) => player,
   );
   useEffect(() => {
     dispatch({type: 'player/fetchShow', payload: {id: route.params.id}});
   }, []);
+
+  useEffect(() => {
+    navigation.setOptions({headerTitle: title});
+  }, [title]);
 
   const toggle = () => {
     dispatch({type: playState === 'playing' ? 'player/pause' : 'player/play'});
@@ -34,12 +39,11 @@ const Detail: React.FC<IProps> = (props) => {
   const next = () => {
     dispatch({type: 'player/next'});
   };
-
   return (
     <View style={styles.container}>
       <PlaySlider />
       <View style={styles.btnWrapper}>
-        <Touchable onPress={previous}>
+        <Touchable disabled={!previousId} onPress={previous}>
           <IconFont name="iconshangyishou" size={35} color="#fff" />
         </Touchable>
         <Touchable onPress={toggle}>
@@ -49,7 +53,7 @@ const Detail: React.FC<IProps> = (props) => {
             color="#fff"
           />
         </Touchable>
-        <Touchable onPress={next}>
+        <Touchable disabled={!nextId} onPress={next}>
           <IconFont name="iconxiayishou" size={35} color="#fff" />
         </Touchable>
       </View>

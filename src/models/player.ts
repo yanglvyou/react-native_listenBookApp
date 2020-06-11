@@ -21,6 +21,7 @@ export interface PlayerModelState {
   currentTime: number;
   duration: number;
   previousId: string;
+  title:string,
   nextId: string;
   sounds: {id: string; title: string}[];
 }
@@ -49,6 +50,7 @@ const initialState: PlayerModelState = {
   duration: 0,
   previousId: '',
   nextId: '',
+  title:'',
   sounds: [],
 };
 
@@ -76,9 +78,12 @@ const playerModel: PlayerModel = {
       const {data} = yield call(axios.get, SHOW_URL, {
         params: {id: payload.id},
       });
-      console.log(33333333);
-      yield call(initPlayer, data.soundUrl);
-      console.log(44444444444);
+      try {
+        yield call(initPlayer, data.soundUrl);
+      } catch (error) {
+        console.log('error: ', error);
+
+      }
       yield put({
         type: 'setState',
         payload: {
@@ -87,7 +92,6 @@ const playerModel: PlayerModel = {
           duration: getDuration(),
         },
       });
-      console.log(555555555555);
       yield put({type: 'play'});
     },
     *play({payload}, {call, put}) {
@@ -111,18 +115,14 @@ const playerModel: PlayerModel = {
       {type: 'watcher'},
     ],
     *previous({payload}, {call, put, select}) {
-      console.log(1111111);
       yield call(stop);
       const {id, sounds}: PlayerModelState = yield select(
         ({player}: RootState) => player,
       );
-      console.log(id, 2222222);
       const index = sounds.findIndex((item) => item.id === id);
       const currentIndex = index - 1;
       const currentItem = sounds[currentIndex];
-      console.log('currentItem: ', currentItem);
       const previousItem = sounds[currentIndex - 1];
-      console.log('previousItem: ', previousItem);
       yield put({
         type: 'setState',
         payload: {

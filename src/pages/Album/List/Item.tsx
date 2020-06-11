@@ -14,7 +14,6 @@ interface IProps {
 const Item: React.FC<IProps> = (props) => {
   const {data, index} = props;
   const onPress = () => {
-    console.log(11111111);
     const {onPress} = props;
     if (typeof onPress === 'function') {
       onPress(data,index);

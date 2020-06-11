@@ -96,12 +96,13 @@ const Album: React.FC<IProps> = (props) => {
 
   const onItemPress = (data: IProgram, index: number) => {
     const previousItem = list[index - 1];
-    const nextItem = list[index - 1];
+    const nextItem = list[index + 1];
     dispatch({
       type: 'player/setState',
       payload: {
         previousId: previousItem ? previousItem.id : '',
         nextId: nextItem ? nextItem.id : '',
+        title: data.title,
         sounds: list.map((item) => ({id: item.id, title: item.title})),
       },
     });

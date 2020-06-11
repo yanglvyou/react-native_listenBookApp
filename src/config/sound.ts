@@ -21,13 +21,12 @@ const init = (url: string) => {
 
 const initPlayer = (filepath: string) => {
   return new Promise((resolve, reject) => {
-    console.log(888888888);
     sound = new Sound(filepath, '', (error) => {
+
       if (error) {
         console.log('failed to load the sound: ', error);
         reject(error);
       } else {
-        console.log(sound,9999999);
         resolve(sound);
       }
     });
@@ -60,14 +59,25 @@ const stop = () => {
   });
 };
 
+// const getCurrentTime = () => {
+//   return new Promise((resolve, reject) => {
+//     if (sound && sound.isLoaded()) {
+//       sound.getCurrentTime((seconds) => {
+//         resolve(seconds);
+//       });
+//     } else {
+//       reject();
+//     }
+//   });
+// };
+
+// 获取当前播放时间
 const getCurrentTime = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     if (sound && sound.isLoaded()) {
-      sound.getCurrentTime((seconds) => {
-        resolve(seconds);
-      });
+      sound.getCurrentTime(resolve);
     } else {
-      reject();
+      resolve(0);
     }
   });
 };
