@@ -20,6 +20,7 @@ export interface PlayerModelState {
   playState: string;
   currentTime: number;
   duration: number;
+  thumbnailUrl:string,
   previousId: string;
   title:string,
   nextId: string;
@@ -48,6 +49,7 @@ const initialState: PlayerModelState = {
   playState: '',
   currentTime: 0,
   duration: 0,
+  thumbnailUrl:'',
   previousId: '',
   nextId: '',
   title:'',

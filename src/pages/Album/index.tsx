@@ -103,6 +103,7 @@ const Album: React.FC<IProps> = (props) => {
         previousId: previousItem ? previousItem.id : '',
         nextId: nextItem ? nextItem.id : '',
         title: data.title,
+        thumbnailUrl: route.params.item.image,
         sounds: list.map((item) => ({id: item.id, title: item.title})),
       },
     });
