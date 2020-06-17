@@ -9,6 +9,7 @@ import Touchable from '@/components/Touchable';
 import IconFont from '@/assets/iconfont';
 import PlaySlider from './PlaySlider';
 import {viewportWidth} from '@/utils/index';
+import Barrage, { Message } from '@/components/Barrage';
 
 interface IProps {
   navigation: RootStackNavigation;
@@ -18,27 +19,48 @@ interface IProps {
 const IMAGE_WIDTH = 180;
 const SCALE = viewportWidth / IMAGE_WIDTH;
 
+
 interface IState {
   barrage: boolean;
+  barrageData: Message[];
+}
+
+const data: string[] = [
+  '最灵繁的人也看不见自己的背脊',
+  '朝闻道，夕死可矣',
+  '阅读是人类进步的阶梯',
+  '内外相应，言行相称',
+  '人的一生是短的',
+  '抛弃时间的人，时间也抛弃他',
+  '自信在于沉稳',
+  '过犹不及',
+  '开卷有益',
+  '有志者事竟成',
+  '合理安排时间，就等于节约时间',
+  '成功源于不懈的努力',
+];
+
+function randomIndex(length: number) {
+  return Math.floor(Math.random() * length);
+}
+
+function getText() {
+  return data[randomIndex(data.length)];
 }
 
 const Detail: React.FC<IProps> = (props) => {
   const {route} = props;
   const [barrage, setBarrage] = useState(false);
+  const [barrageData, setBarrageData] = useState([{id: 0, title: ''}]);
   const anim = useRef(new Animated.Value(1)).current;
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const {
-    id,
-    soundUrl,
-    playState,
-    title,
-    previousId,
-    nextId,
-    thumbnailUrl,
-  } = useSelector(({player}: RootState) => player);
+  const {playState, title, previousId, nextId, thumbnailUrl} = useSelector(
+    ({player}: RootState) => player,
+  );
   useEffect(() => {
     dispatch({type: 'player/fetchShow', payload: {id: route.params.id}});
+    addBarrage();
   }, []);
 
   useEffect(() => {
@@ -62,8 +84,18 @@ const Detail: React.FC<IProps> = (props) => {
     Animated.timing(anim, {
       toValue: barrage ? 1 : SCALE,
       duration: 100,
-      useNativeDriver: false,
+      useNativeDriver: true,
     }).start();
+  };
+
+  const addBarrage = () => {
+    setInterval(() => {
+      if (barrage) {
+        const id = Date.now();
+        const title = getText();
+        setBarrageData([{id, title}]);
+      }
+    }, 1000);
   };
 
   return (
@@ -74,7 +106,15 @@ const Detail: React.FC<IProps> = (props) => {
           style={[styles.image, {transform: [{scale: anim}]}]}
         />
       </View>
-      {barrage && <LinearGradient colors={['rgba(128,104,102,.5)','#807c66']} style={styles.linear} />}
+      {barrage && (
+        <>
+          <LinearGradient
+            colors={['rgba(128,104,102,.5)', '#807c66']}
+            style={styles.linear}
+          />
+          <Barrage  data={barrageData} />
+        </>
+      )}
       <Touchable style={styles.barrageBtn} onPress={barrageClick}>
         <Text style={styles.barrageText}>弹幕</Text>
       </Touchable>
@@ -133,12 +173,12 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
   },
-  linear:{
-    position:'absolute',
-    top:0,
-    height:viewportWidth,
-    width:viewportWidth,
-  }
+  linear: {
+    position: 'absolute',
+    top: 0,
+    height: viewportWidth,
+    width: viewportWidth,
+  },
 });
 
 export default Detail;
