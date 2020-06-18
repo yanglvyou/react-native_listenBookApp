@@ -9,7 +9,7 @@ import Touchable from '@/components/Touchable';
 import IconFont from '@/assets/iconfont';
 import PlaySlider from './PlaySlider';
 import {viewportWidth} from '@/utils/index';
-import Barrage, { Message } from '@/components/Barrage';
+import Barrage, {Message} from '@/components/Barrage';
 
 interface IProps {
   navigation: RootStackNavigation;
@@ -18,7 +18,6 @@ interface IProps {
 
 const IMAGE_WIDTH = 180;
 const SCALE = viewportWidth / IMAGE_WIDTH;
-
 
 interface IState {
   barrage: boolean;
@@ -41,7 +40,7 @@ const data: string[] = [
 ];
 
 function randomIndex(length: number) {
-  return Math.floor(Math.random() * length);
+  return Math.floor(Math.random() * length * 10);
 }
 
 function getText() {
@@ -62,6 +61,10 @@ const Detail: React.FC<IProps> = (props) => {
     dispatch({type: 'player/fetchShow', payload: {id: route.params.id}});
     addBarrage();
   }, []);
+
+  // useEffect(() => {
+  //   addBarrage();
+  // }, [barrage]);
 
   useEffect(() => {
     navigation.setOptions({headerTitle: title});
@@ -90,9 +93,9 @@ const Detail: React.FC<IProps> = (props) => {
 
   const addBarrage = () => {
     setInterval(() => {
+      const id = Date.now();
+      const title = getText();
       if (barrage) {
-        const id = Date.now();
-        const title = getText();
         setBarrageData([{id, title}]);
       }
     }, 1000);
@@ -112,7 +115,7 @@ const Detail: React.FC<IProps> = (props) => {
             colors={['rgba(128,104,102,.5)', '#807c66']}
             style={styles.linear}
           />
-          <Barrage  data={barrageData} />
+          {/*<Barrage data={barrageData} />*/}
         </>
       )}
       <Touchable style={styles.barrageBtn} onPress={barrageClick}>
