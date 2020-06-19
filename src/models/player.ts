@@ -1,3 +1,4 @@
+import {saveProgram} from './../config/realm';
 import {RootState} from '@/models/index';
 import {Reducer} from 'redux';
 import {Effect, Model, EffectWithType, EffectsCommandMap} from 'dva-core-ts';
@@ -20,9 +21,9 @@ export interface PlayerModelState {
   playState: string;
   currentTime: number;
   duration: number;
-  thumbnailUrl:string,
+  thumbnailUrl: string;
   previousId: string;
-  title:string,
+  title: string;
   nextId: string;
   sounds: {id: string; title: string}[];
 }
@@ -49,10 +50,10 @@ const initialState: PlayerModelState = {
   playState: '',
   currentTime: 0,
   duration: 0,
-  thumbnailUrl:'',
+  thumbnailUrl: '',
   previousId: '',
   nextId: '',
-  title:'',
+  title: '',
   sounds: [],
 };
 
@@ -76,7 +77,7 @@ const playerModel: PlayerModel = {
     },
   },
   effects: {
-    *fetchShow({payload}, {call, put}) {
+    *fetchShow({payload}, {call, put, select}) {
       const {data} = yield call(axios.get, SHOW_URL, {
         params: {id: payload.id},
       });
@@ -84,7 +85,6 @@ const playerModel: PlayerModel = {
         yield call(initPlayer, data.soundUrl);
       } catch (error) {
         console.log('error: ', error);
-
       }
       yield put({
         type: 'setState',
@@ -95,6 +95,17 @@ const playerModel: PlayerModel = {
         },
       });
       yield put({type: 'play'});
+      const {id, title, thumbnailUrl, currentTime} = yield select(
+        ({player}: RootState) => player,
+      );
+
+      saveProgram({
+        id,
+        title,
+        thumbnailUrl,
+        currentTime,
+        duration: getDuration(),
+      });
     },
     *play({payload}, {call, put}) {
       yield put({type: 'setState', payload: {playState: 'playing'}});
@@ -102,9 +113,14 @@ const playerModel: PlayerModel = {
 
       yield put({type: 'setState', payload: {playState: 'paused'}});
     },
-    *pause({payload}, {call, put}) {
+    *pause({payload}, {call, put, select}) {
       yield call(pause);
       yield put({type: 'setState', payload: {playState: 'paused'}});
+      const {id, currentTime}:PlayerModelState = yield select(({player}: RootState) => player);
+      saveProgram({
+        id,
+        currentTime,
+      });
     },
     watcherCurrentTime: [
       function* (sagaEffects) {
