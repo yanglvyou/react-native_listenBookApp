@@ -63,7 +63,7 @@ const style = StyleSheet.create({
 function RootStackScreen() {
   return (
     <Stack.Navigator
-      headerMode="float"
+      // headerMode="float"
       screenOptions={{
         headerTitleAlign: 'center',
         ...Platform.select({
