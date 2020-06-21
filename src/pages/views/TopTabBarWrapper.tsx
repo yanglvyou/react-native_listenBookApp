@@ -41,7 +41,6 @@ class TopTabBarWrapper extends React.Component<IProps> {
   };
   get linearGradient() {
     const {gradientVisible, linearColors =['#ccc', '#e2e2e2']} = this.props;
-    console.log('linearColors: ', linearColors);
     if (gradientVisible) {
       return (
         <LinearAnimatedGradientTransition

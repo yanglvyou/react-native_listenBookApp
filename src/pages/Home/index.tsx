@@ -90,7 +90,11 @@ const Home: FunctionComponent<IProps> = (props) => {
   }
 
   function _renderItem({item}: ListRenderItemInfo<IChannel>) {
-    return <ChannelItem data={item} onPress={goToAlbum}></ChannelItem>;
+    return (
+      <View style={{backgroundColor:"#fff"}}>
+        <ChannelItem data={item} onPress={goToAlbum}></ChannelItem>
+      </View>
+    );
   }
 
   function _keyExtractor(item: IChannel) {
@@ -165,7 +169,7 @@ const Home: FunctionComponent<IProps> = (props) => {
   }
 
   return (
-    <View style={{backgroundColor: '#fff'}}>
+    <View>
       <FlatList
         ListHeaderComponent={header}
         ListFooterComponent={footer()}

@@ -34,7 +34,7 @@ const HomeTabs: React.FC<IProps> = () => {
         name={item.id}
         component={Home}
         options={{tabBarLabel: item.name}}
-        initialParams={{namespace: item.id}}></Tab.Screen>
+        initialParams={{namespace: item.id}} />
     );
   }
 

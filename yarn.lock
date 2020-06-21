@@ -5961,6 +5961,13 @@ react-is@^16.12.0, react-is@^16.13.0, react-is@^16.7.0, react-is@^16.8.1, react-
   resolved "https://registry.npm.taobao.org/react-is/download/react-is-16.13.1.tgz?cache=0&sync_timestamp=1592589618544&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-is%2Fdownload%2Freact-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha1-eJcppNw23imZ3BVt1sHZwYzqVqQ=
 
+react-native-circular-progress@^1.3.6:
+  version "1.3.6"
+  resolved "https://registry.npm.taobao.org/react-native-circular-progress/download/react-native-circular-progress-1.3.6.tgz#023f74785274ea1a4473ca9291e600e5d33ee892"
+  integrity sha1-Aj90eFJ06hpEc8qSkeYA5dM+6JI=
+  dependencies:
+    prop-types "^15.7.2"
+
 react-native-config@^1.0.0:
   version "1.2.1"
   resolved "https://registry.npm.taobao.org/react-native-config/download/react-native-config-1.2.1.tgz#f80454fc58ea89b549819ccb4bdab26518a9f0db"

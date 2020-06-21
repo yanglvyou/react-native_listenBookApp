@@ -1,5 +1,6 @@
 import {Dimensions} from 'react-native';
-import {NavigationState} from '@react-navigation/native';
+import * as React from 'react';
+import { NavigationState, NavigationContainerRef } from '@react-navigation/native';
 
 const {width: viewportWidth, height: viewportHeight} = Dimensions.get('window');
 //根据百分比获取宽度
@@ -28,5 +29,10 @@ function formatTime(seconds: number) {
   const s = parseInt((seconds % 60) + '', 10);
   return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
 }
+const navigationRef = React.createRef<NavigationContainerRef>();
 
-export {getActiveRouteName, viewportWidth, viewportHeight,formatTime, wp, hp};
+function navigate(name: string, params?: any) {
+  navigationRef.current?.navigate(name, params);
+}
+
+export {getActiveRouteName, navigationRef,viewportWidth, viewportHeight,navigate,formatTime, wp, hp};

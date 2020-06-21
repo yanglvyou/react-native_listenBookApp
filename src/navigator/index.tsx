@@ -1,6 +1,6 @@
 import React from 'react';
-import {Animated} from 'react-native';
-import {NavigationContainer, RouteProp} from '@react-navigation/native';
+import {Animated,Text} from 'react-native';
+import {NavigationContainer, RouteProp, NavigationState} from '@react-navigation/native';
 import {
   createStackNavigator,
   StackNavigationProp,
@@ -14,6 +14,8 @@ import Category from '@/pages/Category';
 import Album from '@/pages/Album';
 import {Platform, StyleSheet, StatusBar} from 'react-native';
 import IconFont from '@/assets/iconfont';
+import PlayView from '@/pages/views/PlayView';
+import { getActiveRouteName ,navigationRef} from '../utils/index';
 
 export type RootStackParamList = {
   BottomTabs: {
@@ -141,7 +143,7 @@ function ModalStackScreen() {
               name="iconarrow-down"
               size={24}
               color={tintColor}
-              style={StyleSheet.backImage}
+              style={style.backImage}
             />
           ),
         }}
@@ -150,10 +152,32 @@ function ModalStackScreen() {
   );
 }
 
-export default function Navigator() {
-  return (
-    <NavigationContainer>
-      <ModalStackScreen />
-    </NavigationContainer>
-  );
+class Navigator extends React.Component {
+  state = {
+    routeName: 'Root',
+  };
+  componentDidMount() {
+    // SplashScreen.hide();
+  }
+  onStateChange = (state: NavigationState | undefined) => {
+    if (typeof state !== 'undefined') {
+      const routeName = getActiveRouteName(state);
+      this.setState({
+        routeName,
+      });
+    }
+  };
+  render() {
+    const {routeName} = this.state;
+    return (
+      <NavigationContainer
+        ref={navigationRef}
+        onStateChange={this.onStateChange}>
+        <ModalStackScreen />
+        <PlayView routeName={routeName} />
+      </NavigationContainer>
+    );
+  }
 }
+
+export default Navigator;

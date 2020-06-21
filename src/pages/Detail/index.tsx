@@ -54,11 +54,15 @@ const Detail: React.FC<IProps> = (props) => {
   const anim = useRef(new Animated.Value(1)).current;
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const {playState, title, previousId, nextId, thumbnailUrl} = useSelector(
+  const {playState, title, id, previousId, nextId, thumbnailUrl} = useSelector(
     ({player}: RootState) => player,
   );
   useEffect(() => {
-    dispatch({type: 'player/fetchShow', payload: {id: route.params.id}});
+    if (route.params && route.params.id !== id) {
+      dispatch({type: 'player/fetchShow', payload: {id: route.params.id}});
+    } else {
+      dispatch({type: 'player/play'});
+    }
     addBarrage();
   }, []);
 

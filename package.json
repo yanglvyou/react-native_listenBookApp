@@ -30,6 +30,7 @@
     "native-base": "https://github.com/dansokol/NativeBase.git",
     "react": "16.11.0",
     "react-native": "0.62.2",
+    "react-native-circular-progress": "^1.3.6",
     "react-native-config": "^1.0.0",
     "react-native-drag-sort": "^2.1.1",
     "react-native-draggable-flatlist": "^2.3.3",

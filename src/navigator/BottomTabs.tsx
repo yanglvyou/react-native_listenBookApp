@@ -9,12 +9,14 @@ import Found from '@/pages/Found';
 import Account from '@/pages/Account';
 import {RouteProp, TabNavigationState} from '@react-navigation/native';
 import HomeTabs from './HomeTabs';
+import Play from '@/pages/views/Play';
 
 export type BottomTabParamList = {
   HomeTabs: undefined;
   Listen: undefined;
   Found: undefined;
   Account: undefined;
+  Play: undefined;
 };
 type Route = RouteProp<RootStackParamList, 'BottomTabs'> & {
   state?: TabNavigationState;
@@ -78,6 +80,15 @@ const BottomTabs: FunctionComponent<IProps> = (props) => {
             <IconFont name="iconshoucang" size={size} color={color}></IconFont>
           ),
         }}></Tab.Screen>
+      <Tab.Screen
+        name="Play"
+        component={Play}
+        options={({navigation}) => ({
+          tabBarButton: () => {
+            return <Play onPress={()=>navigation.navigate('Detail')} />;
+          },
+        })}
+      />
       <Tab.Screen
         name="Found"
         component={Found}
