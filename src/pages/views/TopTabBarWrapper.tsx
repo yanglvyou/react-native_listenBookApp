@@ -1,25 +1,27 @@
 import React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
-import {connect, ConnectedProps} from 'react-redux';
-import {getStatusBarHeight} from 'react-native-iphone-x-helper';
-import LinearAnimatedGradientTransition from 'react-native-linear-animated-gradient-transition';
 import {
   MaterialTopTabBar,
   MaterialTopTabBarProps,
 } from '@react-navigation/material-top-tabs';
-import {RootState} from '@/models/index';
+import {View, StyleSheet, Text} from 'react-native';
+import {getStatusBarHeight} from 'react-native-iphone-x-helper';
+import LinearAnimatedGradientTransition from 'react-native-linear-animated-gradient-transition';
 import Touchable from '@/components/Touchable';
-import { getActiveRouteName } from '@/utils/index';
+import {RootState} from '@/models/index';
+import {connect, ConnectedProps} from 'react-redux';
+import {getActiveRouteName} from '@/utils/index';
 
-const mapStateToProps = (state: RootState,props:MaterialTopTabBarProps) => {
-  const routeName=getActiveRouteName(props.state)
-  const modelState=state[routeName];
+const mapStateToProps = (state: RootState, props: MaterialTopTabBarProps) => {
+  const routeName = getActiveRouteName(props.state);
+  const modelState = state[routeName];
   return {
-    linearColors:
-    modelState.carousels.length > 0
-        ? modelState.carousels[modelState.activeCarouselIndex].colors
-        : undefined,
     gradientVisible: modelState.gradientVisible,
+    linearColors:
+      modelState.carousels && modelState.carousels.length > 0
+        ? modelState.carousels[modelState.activeCarouselIndex]
+          ? modelState.carousels[modelState.activeCarouselIndex].colors
+          : undefined
+        : undefined,
   };
 };
 
@@ -29,37 +31,37 @@ type ModelState = ConnectedProps<typeof connector>;
 
 type IProps = MaterialTopTabBarProps & ModelState;
 
-class TopTapBarWrapper extends React.Component<IProps> {
-  get linearAnimatedGradientTransition() {
-    const {linearColors = ['#fff', '#fff'], gradientVisible} = this.props;
-    if (gradientVisible) {
-      return (
-        <LinearAnimatedGradientTransition
-          colors={linearColors}
-          style={styles.gradient}
-        />
-      );
-      return;
-    }
-    null;
-  }
-
-  goToCategory = () => {
+class TopTabBarWrapper extends React.Component<IProps> {
+  // static defaultProps={
+  //   linearColors:["#f2799f", "#79c3f2"]
+  // }
+  goCategory = () => {
     const {navigation} = this.props;
     navigation.navigate('Category');
   };
+  get linearGradient() {
+    const {gradientVisible, linearColors =['#ccc', '#e2e2e2']} = this.props;
+    console.log('linearColors: ', linearColors);
+    if (gradientVisible) {
+      return (
+        <LinearAnimatedGradientTransition
+          colors={["#f2799f", "#79c3f2"]}
+          style={styles.gradient}
+        />
+      );
+    }
+    return null;
+  }
 
   render() {
     let {gradientVisible, indicatorStyle, ...restProps} = this.props;
     let textStyle = styles.text;
+
     let activeTintColor = '#333';
-    let inactiveTintColor='#333'
     if (gradientVisible) {
       textStyle = styles.whiteText;
       activeTintColor = '#fff';
-      inactiveTintColor='#fff';
       if (indicatorStyle) {
-        //合并样式
         indicatorStyle = StyleSheet.compose(
           indicatorStyle,
           styles.whiteBackgroundColor,
@@ -68,20 +70,19 @@ class TopTapBarWrapper extends React.Component<IProps> {
     }
     return (
       <View style={styles.container}>
-        {this.linearAnimatedGradientTransition}
-        <View style={styles.tabBarView}>
+        {this.linearGradient}
+        <View style={styles.topTabBarView}>
           <MaterialTopTabBar
             {...restProps}
             indicatorStyle={indicatorStyle}
             activeTintColor={activeTintColor}
-            inactiveTintColor={inactiveTintColor}
-            style={styles.tabBar}
+            style={styles.tabbar}
           />
-          <Touchable style={styles.categoryBtn} onPress={this.goToCategory}>
+          <Touchable style={styles.categoryBtn} onPress={this.goCategory}>
             <Text style={textStyle}>分类</Text>
           </Touchable>
         </View>
-        <View style={styles.bottomWrapper}>
+        <View style={styles.bottom}>
           <Touchable style={styles.searchBtn}>
             <Text style={textStyle}>搜索按钮</Text>
           </Touchable>
@@ -94,30 +95,37 @@ class TopTapBarWrapper extends React.Component<IProps> {
   }
 }
 
+
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     paddingTop: getStatusBarHeight(),
   },
-  tabBar: {
-    elevation: 0,
-    flex: 1,
-    backgroundColor: 'transparent',
+  gradient: {
+    ...StyleSheet.absoluteFillObject,
+    height: 260,
   },
-  tabBarView: {
+  topTabBarView: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  tabbar: {
+    flex: 1,
+    elevation: 0,
+    overflow: 'hidden',
+    backgroundColor: 'transparent',
   },
   categoryBtn: {
     paddingHorizontal: 10,
     borderLeftWidth: StyleSheet.hairlineWidth,
     borderLeftColor: '#ccc',
   },
-  bottomWrapper: {
+  bottom: {
     flexDirection: 'row',
-    alignItems: 'center',
     paddingVertical: 7,
     paddingHorizontal: 15,
+    alignItems: 'center',
   },
   searchBtn: {
     flex: 1,
@@ -125,15 +133,10 @@ const styles = StyleSheet.create({
     height: 30,
     justifyContent: 'center',
     borderRadius: 15,
-    backgroundColor: 'rgba(0,0,0,.1)',
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
   historyBtn: {
-    justifyContent: 'center',
     marginLeft: 24,
-  },
-  gradient: {
-    ...StyleSheet.absoluteFillObject,
-    height: 260,
   },
   text: {
     color: '#333',
@@ -146,4 +149,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connector(TopTapBarWrapper);
+export default connector(TopTabBarWrapper);
