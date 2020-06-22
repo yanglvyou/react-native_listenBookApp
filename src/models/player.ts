@@ -1,4 +1,4 @@
-import {saveProgram} from './../config/realm';
+// import {saveProgram} from './../config/realm';
 import {RootState} from '@/models/index';
 import {Reducer} from 'redux';
 import {Effect, Model, EffectWithType, EffectsCommandMap} from 'dva-core-ts';
@@ -78,7 +78,7 @@ const playerModel: PlayerModel = {
   },
   effects: {
     *fetchShow({payload}, {call, put, select}) {
-      yield call(stop);
+      // yield call(stop);
       const {data} = yield call(axios.get, SHOW_URL, {
         params: {id: payload.id},
       });
@@ -100,13 +100,13 @@ const playerModel: PlayerModel = {
         ({player}: RootState) => player,
       );
 
-      saveProgram({
-        id,
-        title,
-        thumbnailUrl,
-        currentTime,
-        duration: getDuration(),
-      });
+      // saveProgram({
+      //   id,
+      //   title,
+      //   thumbnailUrl,
+      //   currentTime,
+      //   duration: getDuration(),
+      // });
     },
     *play({payload}, {call, put}) {
       yield put({type: 'setState', payload: {playState: 'playing'}});
@@ -118,10 +118,10 @@ const playerModel: PlayerModel = {
       yield call(pause);
       yield put({type: 'setState', payload: {playState: 'paused'}});
       const {id, currentTime}:PlayerModelState = yield select(({player}: RootState) => player);
-      saveProgram({
-        id,
-        currentTime,
-      });
+      // saveProgram({
+      //   id,
+      //   currentTime,
+      // });
     },
     watcherCurrentTime: [
       function* (sagaEffects) {
